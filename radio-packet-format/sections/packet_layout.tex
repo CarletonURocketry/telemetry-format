@@ -1,0 +1,183 @@
+CU InSpace’s radio packets consist of a packet header followed by one or more
+segments called blocks. Each block has its own header followed by a variable
+amount of data. All headers and data segments have a length that is a multiple
+of four bytes. The layout of a packet is shown in figure \ref{format:packet}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}{16}
+    \wordbox{2}{Packet Header} \\
+    \begin{rightwordgroup}{Block 1}
+        \wordbox{2}{Block Header} \\
+        \wordbox[lrt]{1}{Block Contents} \\
+        \skippedwords \\
+        \wordbox[lrb]{1}{}
+    \end{rightwordgroup} \\
+    \wordbox[]{1}{$\vdots$} \\[1ex]
+    \begin{rightwordgroup}{Block $N$}
+        \wordbox{2}{Block Header} \\
+        \wordbox[lrt]{1}{Block Contents} \\
+        \skippedwords \\
+        \wordbox[lrb]{1}{}
+    \end{rightwordgroup} \\
+\end{bytefield}
+\caption{Layout of radio packet}
+\label{format:packet}
+\end{figure}
+
+\subsection{Packet Header}
+Every packet is preceded by a 12 byte header. The header contains an amateur
+radio call sign and the  packets total length as well as other information which
+describes the packet as a whole. The packet header follows the format described
+in figure \ref{format:packet-header}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox[lrt]{1}{Call Sign} \\
+    \bitbox[lrb]{16}{} & \bitbox{6}{Length} & \bitbox{5}{Version} &
+      \bitbox{5}{\color{lightgray}\rule{\width}{\height}} \\
+    \bitbox{4}{Src. Addr.} & \bitbox{12}{Packet Number} &
+      \bitbox{16}{\color{lightgray}\rule{\width}{\height}} \\
+\end{bytefield}
+\caption{Packet header format}
+\label{format:packet-header}
+\end{figure}
+
+\paragraph{Call Sign}
+The first six bytes of the packet must contain an amateur radio callsign in
+ASCII. If the call sign being used is less than size bytes long, the call sign
+will be padded with NUL characters at the end.
+
+\paragraph{Length}
+The \emph{Length} field indicates the total length of the packet in bytes. This
+includes the packet header.
+
+The length of a packet must always be a multiple of four bytes. Because of this
+the \emph{Length} field is encoded in units of four bytes per least significant
+bit. Because a packet with a length of zero is not possible, the value in the 
+\emph{Length} field is one less than the length of the packet divided by four.
+This results in a possible range of packet lengths of four to 256 bytes in
+multiples of four (though a valid packet must have a length of at least twelve
+bytes).
+
+The folowing equations show how the length of a packet in bytes can be converted
+to the corrisponding \emph{Length} value and vice versa.
+
+\begin{align*} 
+\text{Length} &= \frac{\text{packet length in bytes}}{4} - 1 \\
+\text{packet length in bytes} &= \left(\text{Length} + 1\right) \cdot 4
+\end{align*}
+
+\paragraph{Version}
+The \emph{Version} field indicates what version of the radio packet format the
+packet adheres to. The receiver should not attempt to parse a packet that has a
+version number which it does not recognize. The \emph{Call Sign} and
+\emph{Version} fields will remain for all future versions of this packet format,
+all other fields could change.
+
+\paragraph{Source Address}
+This field indicates the source of the packet. Possible device addresses are
+listed in table \ref{table:dev-addresses}. 0xF is not a valid source address.
+
+\begin{table*}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Address         &   Device \\
+\midrule
+0x0             &   Ground Station \\
+0x1             &   Rocket \\
+0x2 through 0xE &   Reserved for future use \\
+0xF             &   Multicast \\
+\bottomrule
+\end{tabular}
+\caption{Device addresses}
+\label{table:dev-addresses}
+\end{table*}
+
+\paragraph{Packet Number}
+This field contains a count value that should be incremented with every packet
+transmition from a given device. The \emph{Packet Number} field together with
+the \emph{Source Address} field form the packet's \emph{Deduplication Code}.
+See section \ref{subsec:other-considerations_deduplication} for more information
+on deduplication.
+
+\subsection{Block Header}
+Every block starts with a four byte block header. This header indicates the type
+of information contained in the block as well as the blocks’s intended
+recipient. The block header is formated as described in figure
+\ref{format:block-header}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \bitbox{5}{Block Length} & \bitbox{1}{\tiny Sig.} &
+      \bitbox{4}{Type} & \bitbox{6}{Subtype} & \bitbox{4}{\small Dest. Addr.} &
+      \bitbox{12}{\color{lightgray}\rule{\width}{\height}}
+\end{bytefield}
+\caption{Block header format}
+\label{format:block-header}
+\end{figure}
+
+\paragraph{Block Length}
+The \emph{Block Length} indicates how many bytes are in the block, including the
+block header. The offset of the the block after the current block is equal to
+the sum of the offset of the current block and the current blocks length.
+
+The length of a block must always be a multiple of four, therefore the
+\emph{Block Length} field is encoded in units of four bytes per least
+significant bit. Because a valid block will always contain at least 4 bytes, the
+value of the \emph{Block Length} field is one less than the length of the block
+divided by four. This means that the field has a range from four bytes to 128
+bytes in four byte increments.
+
+The folowing equations show how the length of a block in bytes can be converted
+to the corrisponding \emph{Length} value and vice versa.
+
+\begin{align*} 
+\text{Block Length} &= \frac{\text{block length in bytes}}{4} - 1 \\
+\text{block length in bytes} &= \left(\text{Block Length} + 1\right) \cdot 4
+\end{align*}
+
+If the length of a block is such that some or all of the block would exceed the
+total packet length, then the block is invalid and will be ignored.
+
+\paragraph{Has Signature (Sig.)}
+The \emph{Has Signature} bit is used for cryptographic signing. See
+section \ref{sec:signatures} for more details.
+
+\paragraph{Type}
+The block \emph{Type} field indicates the purpose of the block. Possible values
+are listed in table \ref{table:block-types}. Block types are discussed in more
+detail in section \ref{sec:block-formats}.
+
+\begin{table*}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Value           &   Block Type \\
+\midrule
+0x0             &   Control \\
+0x1             &   Command \\
+0x2             &   Data \\
+0x3 through 0xF &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Block types}
+\label{table:block-types}
+\end{table*}
+
+\paragraph{Subtype}
+The \emph{Subtype} indicates the type of information or request contained in the
+block. The possible block subtypes for each block type are listed and  discussed
+in more detail in section \ref{sec:block-formats}.
+
+\paragraph{Destination Address}
+This field indicates what device the block is intended for. Received blocks 
+which are intended for a different device should be ignored. Possible addresses
+are listed in table \ref{table:dev-addresses}. A destination address of
+\lstinline{0xF} indicates that the block is intended for anyone who receives it.
+

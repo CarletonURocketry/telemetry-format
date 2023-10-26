@@ -1,0 +1,133 @@
+\subsection{Master Boot Record}
+
+The CU InSpace Avionics system requires SD cards that have been formated with a
+Master Boot Record (MBR) in block 0. 
+
+\subsection{Data Partitions}
+
+CU InSpace data is logged into partitions with partion type \textbf{0x89}. A
+data logging system will always log into the first valid partition on the disk.
+If the first partition becomes full it may continue logging into later
+partitions.
+
+CU InSpace logging data partitions are layed out with a single super block
+followed by one or more SD Card blocks containing "blocks" of application data.
+The application data "blocks" each start with a header which indicates the type
+of data in the block and the length of the block. Application data blocks are
+stored contiguously and may be stored accross SD Card block boundries.
+
+\subsubsection{Super Block}
+
+Every CU InSpace data partition must start with a Super Block which follows the
+format shown in figure \ref{format:superblock}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[leftcurly=.,leftcurlyspace=0pt,bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \begin{leftwordgroup}{0x00}
+        \wordbox{2}{Magic Number}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x08}
+        \bitbox{8}{version} & \bitbox{1}{\rotatebox{90}{\tiny{Cont.}}} & 
+                \bitbox{23}{\color{lightgray}\rule{\width}{\height}} 
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x0C}
+        \wordbox{1}{Parition Length}
+    \end{leftwordgroup} \\
+
+    \wordbox[lrt]{1}{Reserved} \\
+    \cskippedwords{lightgray} \\
+    \wordbox[lrb]{1}{} \\
+
+    \begin{leftwordgroup}{0x60}
+        \wordbox{1}{Flight 0 First Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x64}
+        \wordbox{1}{Flight 0 Last Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x68}
+        \wordbox{1}{Flight 0 Timestamp}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x6C}
+        \wordbox{1}{Flight 1 First Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x70}
+        \wordbox{1}{Flight 1 Last Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x74}
+        \wordbox{1}{Flight 1 Timestamp}
+    \end{leftwordgroup} \\
+   
+    \wordbox[lrt]{1}{} \\
+    \skippedwords \\
+    \wordbox[lrb]{1}{} \\
+
+    \begin{leftwordgroup}{0x1D4}
+        \wordbox{1}{Flight 31 First Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x1D8}
+        \wordbox{1}{Flight 31 Last Data Block Offset}
+    \end{leftwordgroup} \\
+    \begin{leftwordgroup}{0x1DC}
+        \wordbox{1}{Flight 31 Timestamp}
+    \end{leftwordgroup} \\
+
+    \wordbox[lrt]{1}{Reserved} \\
+    \cskippedwords{lightgray} \\
+    \wordbox[lrb]{1}{} \\
+
+    \begin{leftwordgroup}{0x1F8}
+        \wordbox{2}{Magic Number}
+    \end{leftwordgroup} \\
+\end{bytefield}
+\caption{Super block format}
+\label{format:superblock}
+\end{figure}
+
+\subsection{Data Blocks}
+
+Every data block starts with a four byte block header. This header indicates the
+type of information contained in the block. The block header format is described
+in figure \ref{format:block-header}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \bitbox{6}{Class} &
+    \bitbox{10}{Type} &
+    \bitbox{16}{Length}
+\end{bytefield}
+\caption{Block header format}
+\label{format:block-header}
+\end{figure}
+
+The \emph{Class} and \emph{Type} fields are used to specify how the data block
+should be interpreted. The \emph{Length} field specifies the length in bytes of
+the data block including the block header. This length field can be used to find
+the start of the next data block when parsing and can also be used in parsing
+data blocks for which the format does not specify a fixed length. The
+\emph{Length} value must always be a multiple of four bytes. A length of zero is
+invalid.
+
+Table \ref{table:block-classes} shows the possible values for the \emph{Class}
+field in the data block header. Section \ref{sec:block-formats} describes the
+data formats for blocks of each of the classes.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Data Block Class    &   Description \\
+\midrule
+0x0                 &   Logging Metadata (see section \ref{subsec:logging-metadata-blocks}) \\
+0x1                 &   Telemetry Data (see section \ref{subsec:telemetry-data-blocks})\\
+0x2                 &   Diagnostic Data (see section \ref{subsec:diagnostic-data-blocks}) \\
+0x3 through 0x3F    &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Data Block Classes}
+\label{table:block-classes}
+\end{table*}
+

@@ -1,0 +1,897 @@
+Blocks have a type which indicates their purpose. The possible block types are
+listed in table \ref{table:block-types}. This section describes the possible
+block subtypes and their associated data formats.
+
+\subsection{Control Blocks}
+Command blocks contain instructions or requests for information. The possible
+subtypes for command blocks are listed in table \ref{table:control-subtypes}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Value               &   Description \\
+\midrule
+0x0                 &   Signal report \\
+0x1                 &   Command Acknowledgment \\
+0x2                 &   Command Nonce Request \\
+0x3                 &   Command Nonce \\
+0x4                 &   Beacon \\
+0x5                 &   Beacon Response \\
+0x6 through 0x3F    &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Control Block Subtypes}
+\label{table:control-subtypes}
+\end{table*}
+
+\subsubsection{Signal Report}
+A signal report contains information designed to allow the recipient to assess
+the quality of the radio link. Signal reports may be sent at any time by any
+party and should contain information pertaining to the last packet received from
+the block's destination device.
+
+Signal reports follow a query response structure. An initial signal report that
+is marked as a request is sent first. The recipient of this request then
+responds with a signal report that is not marked as a request.
+
+The format of the payload data for a signal report is described in figure
+\ref{format:signal-report}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \bitbox{8}{SNR} & \bitbox{8}{RSSI} & \bitbox{2}{\tiny{Radio}} &
+      \bitbox{6}{TX Power} \bitbox{7}{\color{lightgray}\rule{\width}{\height}} &
+      \bitbox{1}{\rotatebox{90}{\tiny{Req.}}}
+\end{bytefield}
+\caption{Signal Report Payload Format}
+\label{format:signal-report}
+\end{figure}
+
+\paragraph{SNR}
+Signal to Noise Ratio for the last packet received from the destination device
+in units of \SI{1}{\decibel\per LSB}. This value is encoded as a one
+byte signed integer in twos compliment format.
+
+In a response signal report this should always be the SNR for the packet that
+contained the request.
+
+\paragraph{RSSI}
+Received Signal Strength Indication for the last packet received from the
+destination device in units of \SI{1}{\decibel\per LSB}. This value is encoded
+as a one byte signed integer in twos compliment format
+
+In a response signal report this should always be the RSSI for the packet that
+contained the request.
+
+\paragraph{Radio}
+The index of the radio used by the device that send the requesting signal
+report. This field is not meaningful to the recipient of the request, the
+recipient simply echos it back to the sender of the request in the response
+signal report. This field is encoded as a two bit unsigned integer.
+
+\paragraph{TX Power}
+The transmit power with which the packet containing the signal report block was
+sent in units of \SI{1}{\decibel\per LSB}. This value is encoded as a six bit
+signed integer in twos compliment format
+
+\paragraph{Request}
+When set, this bit indicates that this is a request signal report and that the
+receiver should respond. If this bit is not set then this block is a response
+signal report.
+
+\subsubsection{Beacon}
+The beacon frame is used while searching for a peer device. See section
+\ref{sec:dynamic-settings} for more information on search mode operation. This
+block subtype does not have any payload data.
+
+\subsection{Command Blocks}
+Command blocks contain instructions or requests for information. The possible
+subtypes for command blocks are listed in table \ref{table:command-subtypes}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Value               &   Description \\
+\midrule
+0x0                 &   Reset rocket avionics \\
+0x1                 &   Request telemetry data \\
+0x2                 &   Deploy parachute \\
+0x3                 &   Tare sensors \\
+0x4 through 0x3F    &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Command Block Subtypes}
+\label{table:command-subtypes}
+\end{table*}
+
+\subsubsection{Reset Rocket Avionics}
+When this block is received by the rocket avionics the rocket’s microcontroller
+will be reset. If this block’s ACK requested bit is set the acknowledgment will
+be sent before the avionics reset. The acknowledgments for any other blocks in
+the same packet as the reset command are not guaranteed to be sent. This block
+subtype does not have any payload data.
+
+\subsubsection{Request Telemetry Data}
+This command is used to explicitly request that the rocket avionics sent
+particular telemetry data back. Up to four different telemetry data blocks can
+be requested per command. The payload data for the request telemetry data
+command is made up of four bytes, each of which may indicate a requested data
+block subtype. The format of the request block payload is described in figure
+\ref{format:req-telem-data}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \bitbox{6}{Data Subtype} &
+      \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+      \bitbox{6}{Data Subtype} &
+      \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+      \bitbox{6}{Data Subtype} &
+      \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+      \bitbox{6}{Data Subtype} &
+      \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U}
+\end{bytefield}
+\caption{Telemetry Data Request Payload Format}
+\label{format:req-telem-data}
+\end{figure}
+
+\paragraph{Data Subtype}
+The subtype of data block that is being requested.
+
+\paragraph{Used (U)}
+For each of the four bytes in the request telemetry packet’s payload this bit
+indicates whether the byte contains a valid request. Any bytes for which this
+bit is not set should be ignored.
+
+\subsubsection{Deploy parachute}
+This command indicates to the rocket avionics that it should immediately deploy
+the drogue parachute. This block subtype does not have any payload data.
+
+\subsubsection{Tare sensors}
+This command tells the rocket to zero out all of its sensors. This command
+should only be send when the rocket is on the pad ready to launch. The rocket
+avionics can assume that when it receives this command it is stationary and in
+the correct orientation for launch.
+
+\subsection{Data Blocks}
+Data blocks contain telemetry data. The possible subtypes data blocks are listed
+in table \ref{table:data-subtypes}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Value               &   Description \\
+\midrule
+0x00                &   Debug message \\
+0x01                &   Status \\
+0x02                &   Startup message \\
+0x03                &   Altitude \\
+0x04                &   Acceleration \\
+0x05                &   Angular velocity \\
+0x06                &   GNSS location \\
+0x07                &   GNSS metadata \\
+0x08                &   Power information \\
+0x09                &   Temperatures \\
+0x0A                &   MPU-9250 IMU data \\
+0x0B                &   KX134-1211 accelerometer data \\
+0x0C through 0x3F   &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Data Block Subtypes}
+\label{table:data-subtypes}
+\end{table*}
+
+
+\subsubsection{Debug Message}
+
+Debug messages are string messages intended to provide human readable debugging
+output. They are encoded as UTF-8 strings and do not require a terminating NUL
+character because the string length can be extrapolated from the block length.
+Every debug message is preceded by a 32 bit unsigned mission time value.
+
+Note that like all other data blocks debug messages must be a multiple of four
+bytes long. If the string to be logged is not a multiple of four bytes it must
+be padded with NUL characters at the end to make it fit the required alignment.
+The length recorded in the block header must be a multiple of four, and
+therefore must include any NUL padding bytes at the end of the string.
+
+
+\subsubsection{Status}
+
+The status block describes the state of the various software components of the
+avionics system.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Mission Time} \\
+    \bitbox{16}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{3}{\scriptsize{KX134 State}} &
+        \bitbox{3}{\scriptsize{Alt State}} &
+        \bitbox{3}{\scriptsize{IMU State}} &
+        \bitbox{3}{\scriptsize{SD State}} &
+        \bitbox{4}{\scriptsize{Deployment State}} \\
+    \wordbox{1}{SD Blocks Recorded} \\
+    \wordbox{1}{SD Checkouts Missed} \\
+\end{bytefield}
+\caption{Status Data Payload Format}
+\label{format:telem-status}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time at which the states where recorded.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Sensor State Value  &   Description \\
+\midrule
+0x0                 &   None (sensor not enabled) \\
+0x1                 &   Initializing \\
+0x2                 &   Running \\
+0x3                 &   Self test failed \\
+0x4                 &   Failed \\
+0x5 through 0x7     &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Sensor States}
+\label{table:sensor-state}
+\end{table*}
+
+\paragraph{KX134 State}
+The current state of the KX134-1211 accelerometer (if enabled). This field will
+contain one of the values from table \ref{table:sensor-state}.
+
+\paragraph{Alt State}
+The current state of the altimeter (if enabled). This field will contain one of
+the values from table \ref{table:sensor-state}.
+
+\paragraph{IMU State}
+The current state of the inertial measurment unit (if enabled). This field will
+contain one of the values from table \ref{table:sensor-state}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+SD Card Driver State Value  &   Description \\
+\midrule
+0x0                         &   Card not present \\
+0x1                         &   Initializing \\
+0x2                         &   Read \\
+0x3                         &   Failed \\
+0x4 through 0x7             &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{SD Card Driver States}
+\label{table:sd-state}
+\end{table*}
+
+\paragraph{SD State}
+The current state of the SD card driver. This field will contain one of the
+values from table \ref{table:sd-state}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Deployment Service State Value  &   Description \\
+\midrule
+0x0                             &   Idle \\
+0x1                             &   Armed \\
+0x2                             &   Powered ascent \\
+0x3                             &   Coasting ascent \\
+0x4                             &   Deployment in progress \\
+0x5                             &   Descent \\
+0x6                             &   Recovery \\
+0x7 through 0xF                 &   Reserved for future use \\
+\bottomrule
+\end{tabular}
+\caption{Deployment Service States}
+\label{table:deployment-state}
+\end{table*}
+
+\paragraph{Deployment State}
+The current state of the deployment service state machine. This field will
+contain one of the values from table \ref{table:deployment-state}.
+
+\paragraph{SD Blocks Recorded}
+The number of blocks of telemetry data that have been recorded to the SD card
+during the current flight. Not this this refers to storage device blocks (512
+byte units) rather than telemetry format blocks.
+
+\paragraph{SD Checkouts Missed}
+The number of telemtery format data blocks that have been dropped because there
+was not enough buffer space free to log them to the SD card.
+
+
+\subsubsection{Altitude}
+
+The altitude block is used to convey altimeter data. This block contains both
+the altitude value calculated by the rocket and the raw pressure and temperature
+values if they are available. The format of the altitude block payload is
+described in figure \ref{format:telem-altitude}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Measurement Time} \\
+    \wordbox{1}{Pressure} \\
+    \wordbox{1}{Temperature} \\
+    \wordbox{1}{Altitude}
+\end{bytefield}
+\caption{Altitude Data Payload Format}
+\label{format:telem-altitude}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Pressure}
+The measured pressure in units of Pascals. This field is a signed 32 bit integer
+in two's complement format.
+
+\paragraph{Temperature}
+The measured temperature in units of 1 millidegree Celsius/LSB. This field is a
+signed 32 bit integer in two's complement format.
+
+\paragraph{Altitude}
+The calculated altitude in units of \SI{1}{\milli\meter\per LSB}. This field is
+a signed 32 bit integer in two's complement format.
+
+
+\subsubsection{Acceleration}
+
+The acceleration block is used to convey generic 3-axis accelerometer data. This
+block is intended to abstract over the details of any individual accelerometer.
+The format of the acceleration block payload is described in figure
+\ref{format:telem-acceleration}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Measurement Time} \\
+    \bitbox{8}{Full Scale Range} &
+        \bitbox{8}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{16}{X-Axis} \\
+    \bitbox{16}{Y-Axis} & \bitbox{16}{Z-Axis}
+\end{bytefield}
+\caption{Acceleration Data Payload Format}
+\label{format:telem-acceleration}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Full Scale Range}
+The full scale range of the accelerometer in g. This value represents the
+maximum and minimum acceleration that can be measured, for example a value of 16
+in this field represents a full scale range of \SI{\pm 16}{g}. If the resolution
+of the accelerometer is less than 16 bits the full scale range must be adjusted
+to compensate, for example a 10 bit accelerometer with a \SI{\pm 2}{g} full
+scale range would use the value 64 for this field.
+
+This value can be used to calculate the accelerometer sensitivity, which in turn
+can be used to convert the acceleration measurements for each axis into useful
+units. For a measurement $m$ with a full scale range $f$ the acceleration in g
+can be found like this:
+
+$$
+\text{acceleration} = m \cdot \frac{f}{2^{15}}
+$$
+
+\paragraph{*-Axis}
+These fields represent the acceleration measurements for each axis. These fields
+are signed integers in two's complement format. If the resolution of the
+accelerometer is less than 16 bits the values must be sign extended.
+
+
+\subsubsection{Angular Velocity}
+
+The angular velocity block is used to convey generic 3-axis gyroscope data. This
+block is intended to abstract over the details of any individual gyroscope. The
+format of the acceleration block payload is described in figure
+\ref{format:telem-angular-velocity}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Measurement Time} \\
+    \bitbox{16}{Full Scale Range} & \bitbox{16}{X-Axis} \\
+    \bitbox{16}{Y-Axis} & \bitbox{16}{Z-Axis}
+\end{bytefield}
+\caption{Angular Velocity Data Payload Format}
+\label{format:telem-angular-velocity}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Full Scale Range}
+The full scale range of the gyroscope in degrees per second. This value
+represents the maximum and minimum angular velocity that can be measured, for
+example a value of 2000 in this field represents a full scale range of
+\SI{\pm 2000}{degrees per second}. If the resolution of the gyroscope is less
+than 16 bits the full scale range must be adjusted to compensate, for example a
+12 bit gyroscope with a \SI{\pm 500}{degree per second} full scale range would
+use the value 4000 for this field.
+
+This value can be used to calculate the gyroscope sensitivity, which in turn can
+be used to convert the acceleration measurements for each axis into useful
+units. For a measurement $m$ with a full scale range $f$ the angular velocity in
+degrees per second can be found like this:
+
+$$
+\text{angular velocity} = m \cdot \frac{f}{2^{15}}
+$$
+
+
+\paragraph{*-Axis}
+These fields represent the angular velocity measurements for each axis. These
+fields are signed integers in two's complement format.
+
+
+\subsubsection{GNSS Location}
+
+The format of the GNSS location block is described in figure
+\ref{format:telem-gnss-location}.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Fix Time} \\
+    \wordbox{1}{Latitude} \\
+    \wordbox{1}{Longitude} \\
+    \wordbox{1}{UTC Time} \\
+    \wordbox{1}{Altitude} \\
+    \bitbox{16}{Speed} & \bitbox{16}{Course} \\
+    \bitbox{16}{PDOP} & \bitbox{16}{HDOP} \\
+    \bitbox{16}{VDOP} & \bitbox{8}{Sats} & \bitbox{2}{Fix} &
+      \bitbox{6}{\color{lightgray}\rule{\width}{\height}}
+
+\end{bytefield}
+\caption{GNSS Location Data Payload Format}
+\label{format:telem-gnss-location}
+\end{figure}
+
+\paragraph{Fix Time}
+The mission time when the fix was received.
+
+\paragraph{Latitude}
+The latitude of the rocket in units of \SI{100}{\micro\arcminute\per LSB}
+(micro-arcminutes per least significant bit). This field is a signed 32 bit
+integer in two's complement format.
+
+\paragraph{Longitude}
+The longitude of the rocket in units of \SI{100}{\micro\arcminute\per LSB}
+(micro-arcminutes per least significant bit). This field is a signed 32 bit
+integer in two's complement format.
+
+\paragraph{UTC Time}
+The UTC time when the fix was received in seconds since the Unix epoch.
+
+\paragraph{Altitude}
+The altitude as calculated by the GNSS module in units of millimetres above
+sea level. This field is a signed 32 bit integer in two's complement format.
+
+\paragraph{Speed}
+The speed over ground of the rocket in hundredths of a knot. This field is a
+signed 16 bit integer in two's complement format.
+
+\paragraph{Course}
+The course over ground of the rocket in hundredths of a degree. This field is a
+signed 16 bit integer in two's complement format.
+
+\paragraph{PDOP}
+Position Dilution of Precision * 100.
+
+\paragraph{HDOP}
+Horizontal Dilution of Precision * 100.
+
+\paragraph{VDOP}
+Vertical Dilution of Precision * 100.
+
+\paragraph{Sats}
+The number of GNSS satellites used in the fix.
+
+\paragraph{Fix}
+The fix type as shown in table \ref{table:gnss-fix-type}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Fix Type Value  &   Description \\
+\midrule
+0x0             &   Unknown \\
+0x1             &   Not available \\
+0x2             &   2D fix \\
+0x3             &   3D fix \\
+\bottomrule
+\end{tabular}
+\caption{GNSS Fix Type Values}
+\label{table:gnss-fix-type}
+\end{table*}
+
+
+\subsubsection{GNSS Metadata}
+
+The format of the GNSS location block is described in figure
+\ref{format:telem-gnss-metadata}. The length of this block varies, after the
+GLONASS satellites in use bitfield 4 bytes of information is encoded for each
+satellite in view of the GNSS module. Note that not all satellites which are in
+view will also be in use.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Mission Time} \\
+    \wordbox{1}{GPS Satellites in Use} \\
+    \wordbox{1}{GLONASS Satellites in Use} \\
+    \begin{rightwordgroup}{First Sat}
+        \bitbox{8}{Elevation} & \bitbox{8}{SNR} & \bitbox{5}{ID} &
+            \bitbox{9}{Azimuth} &
+            \bitbox{1}{\color{lightgray}\rule{\width}{\height}} &
+            \bitbox{1}{T}
+    \end{rightwordgroup} \\
+    \bitbox[]{32}{$\vdots$ \\[1ex]} \\
+    \begin{rightwordgroup}{Last Sat}
+        \bitbox{8}{Elevation} & \bitbox{8}{SNR} & \bitbox{5}{ID} &
+            \bitbox{9}{Azimuth} &
+            \bitbox{1}{\color{lightgray}\rule{\width}{\height}} &
+            \bitbox{1}{T}
+    \end{rightwordgroup}
+\end{bytefield}
+\caption{GNSS Metadata Payload Format}
+\label{format:telem-gnss-metadata}
+\end{figure}
+
+\paragraph{Mission Time}
+The mission time when the fix was received.
+
+\paragraph{GPS Satellites in Use}
+
+This bitfield indicates which GPS satellites are used in the current fix. Each
+bit position represents a GPS pseudo-random noise sequence.
+
+\paragraph{GLONASS Satellites in Use}
+This bitfield indicates which GLONASS satellites are used in the current fix.
+Each bit position represents a slot number. Bit zero corresponds to slot 65, bit
+1 to slot 66 and so on.
+
+\paragraph{Elevation}
+This field represents the elevation for a GNSS satellite in degrees.
+
+\paragraph{SNR}
+This field represents the signal to noise ratio for a signal from a satellite in
+dB Hz.
+
+\paragraph{ID}
+This field contains the satellite pseudo-ransom noise sequence for GPS
+satellites or the satellite ID for GLONASS satellites.
+
+\paragraph{Azimuth}
+This field contains the satellite azimuth in degrees.
+
+\paragraph{T}
+This field encodes the satellite type, it is 0 for GPS satellites or 1 for
+GLONASS satellites.
+
+
+\subsubsection{MPU9250 IMU Data}
+
+The format of the MPU9250 IMU data block is described in figure
+\ref{format:telem-mpu9250-imu}. This block can contain a variable amount of
+acceleration, angular velocity and magnetic flux density data. The format of
+each individual data entry is described in figure
+\ref{format:telem-mpu9250-imu-entry}. Note that since each entry is 21 bytes
+long entries after the first one may not be properly aligned.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Measurement Time} \\
+    \bitbox{8}{A/G SR Div} & \bitbox{1}{\rotatebox{90}{\tiny MS}} &
+        \bitbox{2}{\tiny A FSR} & \bitbox{2}{\tiny G FSR} &
+        \bitbox{3}{A BW} & \bitbox{3}{G BW} &
+        \bitbox{13}{\color{lightgray}\rule{\width}{\height}} &
+    \wordbox[lr]{1}{IMU Data} \\
+    \skippedwords \\
+    \wordbox[lrb]{1}{} \\
+\end{bytefield}
+\caption{MPU9250 Inertial Measurement Unit Data Payload Format}
+\label{format:telem-mpu9250-imu}
+\end{figure}
+
+\paragraph{Measurement Time}
+The time of the last measurement in the block.
+
+\paragraph{A/G SR Div}
+The accelerometer/gyroscope sample rate divisor field can be used to calculate
+the sample rate for the accelerometer and gyrosope. The folowing equation
+can be used to find the sample rate:
+
+$$
+\text{sample rate} = \frac{1000}{\text{A/G SR Div} + 1}
+$$
+
+\paragraph{MS}
+This field encodes the sample rate for the magnetometer. The possible values for
+this field are shown in table \ref{table:mpu9250-mag-odr}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+MS Value   &   Sample Rate \\
+\midrule
+0x0        &   {\SI{8}{\hertz}} \\
+0x1        &   {\SI{100}{\hertz}} \\
+\bottomrule
+\end{tabular}
+\caption{MPU9250 Magnetometer Sample Rate Values}
+\label{table:mpu9250-mag-odr}
+\end{table*}
+
+\paragraph{A FSR}
+This field encodes the full scale range for the accelerometer. The possible
+values for this field are shown in table \ref{table:mpu9250-a-fsr}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Accel. FSR Value    &   Full Scale Range \\
+\midrule
+0x0                 &   {\SI{\pm 2}{g}} \\
+0x1                 &   {\SI{\pm 4}{g}} \\
+0x2                 &   {\SI{\pm 8}{g}} \\
+0x3                 &   {\SI{\pm 16}{g}} \\
+\bottomrule
+\end{tabular}
+\caption{MPU9250 Accelerometer Full Scale Range Values}
+\label{table:mpu9250-a-fsr}
+\end{table*}
+
+\paragraph{G FSR}
+This field encodes the full scale range for the gyroscope. The possible
+values for this field are shown in table \ref{table:mpu9250-g-fsr}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Gyro. FSR Value     &   Full Scale Range \\
+\midrule
+0x0                 &   {\SI{\pm 250}{\degree\per\second}} \\
+0x1                 &   {\SI{\pm 500}{\degree\per\second}} \\
+0x2                 &   {\SI{\pm 1000}{\degree\per\second}} \\
+0x3                 &   {\SI{\pm 2000}{\degree\per\second}} \\
+\bottomrule
+\end{tabular}
+\caption{MPU9250 Gyroscope Full Scale Range Values}
+\label{table:mpu9250-g-fsr}
+\end{table*}
+
+\paragraph{A BW}
+This field encodes the accelerometer low pass filter bandwidth. The possible
+values for this field are shown in table \ref{table:mpu9250-a-bw}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Accel. BW Value     &   Low Pass Filter \SI{3}{\decibel} Bandwidth \\
+\midrule
+0x0                 &   {\SI{5.05}{\hertz}} \\
+0x1                 &   {\SI{10.2}{\hertz}} \\
+0x2                 &   {\SI{21.2}{\hertz}} \\
+0x3                 &   {\SI{44.8}{\hertz}} \\
+0x4                 &   {\SI{99}{\hertz}} \\
+0x5                 &   {\SI{218.1}{\hertz}} \\
+0x6                 &   {\SI{420}{\hertz}} \\
+\bottomrule
+\end{tabular}
+\caption{MPU9250 Accelerometer Low Pass Filter Bandwidth Values}
+\label{table:mpu9250-a-bw}
+\end{table*}
+
+\paragraph{G BW}
+This field encodes the gyroscope low pass filter bandwidth. The possible values
+for this field are shown in table \ref{table:mpu9250-g-bw}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Gyro. BW Value      &   Low Pass Filter \SI{3}{\decibel} Bandwidth \\
+\midrule
+0x0                 &   {\SI{5}{\hertz}} \\
+0x1                 &   {\SI{10}{\hertz}} \\
+0x2                 &   {\SI{20}{\hertz}} \\
+0x3                 &   {\SI{41}{\hertz}} \\
+0x4                 &   {\SI{92}{\hertz}} \\
+0x5                 &   {\SI{184}{\hertz}} \\
+0x6                 &   {\SI{250}{\hertz}} \\
+\bottomrule
+\end{tabular}
+\caption{MPU9250 Gyroscope Low Pass Filter Bandwidth Values}
+\label{table:mpu9250-g-bw}
+\end{table*}
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \bitbox{16}{Accel. X} & \bitbox{16}{Accel. Y} \\
+    \bitbox{16}{Accel. Z} & \bitbox{16}{Temperature} \\
+    \bitbox{16}{Gyro. X} & \bitbox{16}{Gyro. Y} \\
+    \bitbox{16}{Gyro. Z} & \bitbox{16}{Mag. X} \\
+    \bitbox{16}{Mag. Y} & \bitbox{16}{Mag. Z} \\
+    \bitbox{3}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{1}{O} & \bitbox{1}{R} &
+        \bitbox{3}{\color{lightgray}\rule{\width}{\height}}
+\end{bytefield}
+\caption{MPU9250 IMU Measurement Entry Foramt}
+\label{format:telem-mpu9250-imu-entry}
+\end{figure}
+
+\paragraph{Accel. *}
+The acceleration data fields are big endian values encoded in two's complement.
+
+\paragraph{Gyro. *}
+The angular velocity data fields are big endian values encoded in two's
+complement.
+
+\paragraph{Mag. *}
+The magnetic flux denisity data fields are little endian values encoded in two's
+complement.
+
+\paragraph{O}
+This field indicates whether there was an overflow while measuring the magnetic
+flux denisity. If this bit is set the magnetometer data for the sample is not
+valid.
+
+\paragraph{R}
+This field indicates the resolution of the magnetometer data. If this bit is set
+resolution is 16 bits, otherwise it is 14 bits.
+
+
+\subsubsection{KX134-1211 Accelerometer Data}
+
+The format of the KX134-1211 accelerometer data block is described in figure
+\ref{format:telem-kx134-accel}. This block can contain a variable amount of
+acceleration data. This data will be in sets of three measurements (x, y, z),
+each measurement is either 8 or 16 bits long and is encoded in two's complement
+format.
+
+\begin{figure}[h]
+\centering
+\begin{bytefield}[bitwidth=0.03\linewidth]{32}
+    \bitheader{0-31} \\
+    \wordbox{1}{Measurement Time} \\
+    \bitbox{4}{ODR} & \bitbox{2}{\tiny Range} &
+        \bitbox{1}{\rotatebox{90}{\tiny Roll}} &
+        \bitbox{1}{\rotatebox{90}{\tiny Res}} &
+        \bitbox{6}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{2}{\small Pad} &
+        \bitbox[lrt]{16}{} \\
+    \wordbox[lr]{1}{Acceleration Data} \\
+    \skippedwords \\
+    \wordbox[lrb]{1}{} \\
+\end{bytefield}
+\caption{KX134-1211 Accelerometer Data Payload Format}
+\label{format:telem-kx134-accel}
+\end{figure}
+
+\paragraph{Measurement Time}
+The time of the last measurement in the block.
+
+\paragraph{ODR}
+This field encodes the output data rate at which the accelerometer is
+configured. The possible values for this field are shown in table
+\ref{table:kx134-odr}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+ODR Value  &   Output Data Rate \\
+\midrule
+0x0        &   {\SI{0.781}{\hertz}} \\
+0x1        &   {\SI{1.563}{\hertz}} \\
+0x2        &   {\SI{3.125}{\hertz}} \\
+0x3        &   {\SI{6.25}{\hertz}} \\
+0x4        &   {\SI{12.5}{\hertz}} \\
+0x5        &   {\SI{25}{\hertz}} \\
+0x6        &   {\SI{50}{\hertz}} \\
+0x7        &   {\SI{100}{\hertz}} \\
+0x8        &   {\SI{200}{\hertz}} \\
+0x9        &   {\SI{400}{\hertz}} \\
+0xa        &   {\SI{800}{\hertz}} \\
+0xb        &   {\SI{1600}{\hertz}} \\
+0xc        &   {\SI{3200}{\hertz}} \\
+0xd        &   {\SI{6400}{\hertz}} \\
+0xe        &   {\SI{12800}{\hertz}} \\
+0xf        &   {\SI{25600}{\hertz}} \\
+\bottomrule
+\end{tabular}
+\caption{KX134-1211 Output Data Rate Values}
+\label{table:kx134-odr}
+\end{table*}
+
+\paragraph{Range}
+This field encodes the configured full scale range of the accelerometer. The
+possible values for this field are shown in table \ref{table:kx134-fsr}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Range Value &   Full Scale Range \\
+\midrule
+0x0         &   {\SI{\pm 8}{g}} \\
+0x1         &   {\SI{\pm 16}{g}} \\
+0x2         &   {\SI{\pm 32}{g}} \\
+0x3         &   {\SI{\pm 64}{g}} \\
+\bottomrule
+\end{tabular}
+\caption{KX134-1211 Full Scale Range Values}
+\label{table:kx134-fsr}
+\end{table*}
+
+\paragraph{Roll}
+This field encode the accelerometer's configured low pass filter rolloff. The
+possible values for this field are shown in table \ref{table:kx134-rolloff}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Roll Value &   Low Pass Filter Corner Frequency \\
+\midrule
+0x0        &   $\text{ODR} / 9$ \\
+0x1        &   $\text{ODR} / 2$ \\
+\bottomrule
+\end{tabular}
+\caption{KX134-1211 Low Pass Filter Rolloff Values}
+\label{table:kx134-rolloff}
+\end{table*}
+
+\paragraph{Res}
+This field encodes the output resolution for the accelerometer. The possible
+values for this field are shown in table \ref{table:kx134-res}.
+
+\begin{table*}[htb]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Res Value  &   Resolution \\
+\midrule
+0x0        &   {\SI{8}{bit}} \\
+0x1        &   {\SI{16}{bit}} \\
+\bottomrule
+\end{tabular}
+\caption{KX134-1211 Resolution Values}
+\label{table:kx134-res}
+\end{table*}
+
+\paragraph{Pad}
+This field indicates the number of padding bytes which present after the end of
+the acceleration data. This field is important when parsing 8 bit data because
+it could appear that there is an extra sample due to padding.
+

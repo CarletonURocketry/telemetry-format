@@ -1,0 +1,27 @@
+\subsection {Deduplication}
+\label{subsec:other-considerations_deduplication}
+
+\subsection{Endianness}
+
+All fields are little endian unless otherwise indicated.
+
+\subsection{Alignment}
+
+The start of all data blocks must be alligned to a four byte boundry within the
+packet. To facilitate this data blocks must be padded to ensure that their
+lengths are always a multiple of four bytes. Padding bytes should be set to zero
+when transmiting and their content should be ignored by the receiver.
+
+\subsection{Timing}
+
+\subsubsection{Backoff Period}
+
+\subsubsection{Timeouts}
+
+\subsection{Validation and Sanity Checks}
+
+\subsection{Reserved Fields}
+
+Reserved fields should be set to zero when transmitting and ignored when
+receiving.
+
