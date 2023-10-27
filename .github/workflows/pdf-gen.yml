@@ -17,5 +17,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            radio_packet_format.pdf
-            data_logging_format.pdf
+            radio-packet-format/radio_packet_format.pdf
+            data-logging-format/data_logging_format.pdf
