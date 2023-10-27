@@ -16,6 +16,7 @@ jobs:
       - name: Upload documents
         uses: actions/upload-artifact@v3
         with:
+          name: Telemetry Specifications
           path: |
             radio-packet-format/radio_packet_format.pdf
             data-logging-format/data_logging_format.pdf
