@@ -5,7 +5,6 @@
 \usepackage[hidelinks,bookmarksnumbered]{hyperref}
 \usepackage[all]{hypcap}
 \usepackage{fancyhdr}
-%\usepackage{sectsty}
 \usepackage[calcwidth]{titlesec}
 \usepackage{chngcntr}
 \usepackage{bytefield}
@@ -18,7 +17,7 @@
 \usepackage{amsmath}
 
 \title{CU InSpace Data Logging Format}
-\author{Samuel Dewan}
+\author{Samuel Dewan \\ Matteo Golin}
 
 % Headers and footers
 \pagestyle{fancy}
@@ -54,76 +53,67 @@
     \makebox[0pt][r]{#1\hspace{6pt}}%
 }
 \titleformat{\section}
-    {\sffamily\Large\bfseries}
-    {\marginsecnumber\thesection}
-    {0pt}
-    {}
+{\sffamily\Large\bfseries}
+{\marginsecnumber\thesection}
+{0pt}
+{}
 \titleformat{\subsection}
-    {\sffamily\large\bfseries}
-    {\marginsecnumber\thesubsection}
-    {0pt}
-    {}
+{\sffamily\large\bfseries}
+{\marginsecnumber\thesubsection}
+{0pt}
+{}
 \titleformat{\subsubsection}
-    {\sffamily\normalsize\bfseries}
-    {\marginsecnumber\thesubsubsection}
-    {0pt}
-    {}
-
-% Draft watermark
-\usepackage{eso-pic,graphicx}
-\AddToShipoutPicture*{%
-    \AtTextCenter{%
-        \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
-        \rotatebox{45}{\textsf{\textbf{\color{lightgray}DRAFT}}}}}
-    }
-}
+{\sffamily\normalsize\bfseries}
+{\marginsecnumber\thesubsubsection}
+{0pt}
+{}
 
 % Coloured skipped words command for bytefields
 \makeatletter
 \DeclareRobustCommand{\cskippedwords}[2][2ex]{%
-  \setlength{\units@wide}{\bf@bitwidth * \bits@wide}%
-  \setlength{\units@high}{1pt * \ratio{\units@wide}{6.0pt}}%
-  \setlength{\units@tall}{#1 + \units@high}%
-  \edef\num@wide{\strip@pt\units@wide}%
-  \edef\num@tall{\strip@pt\units@tall}%
-  \edef\num@high{\strip@pt\units@high}%
-  \begin{picture}(\num@wide,\num@tall)%
-  \begin{tikzpicture}[overlay]
-  \draw[fill=#2,fill opacity=0.2] 
-    (0,-\bf@bitheight) -- (0,0) -- (0,\units@high) -- (\units@wide,0) -- +(0,-\bf@bitheight) -- cycle;
-  \draw[fill=#2,fill opacity=0.2]
-    (0,\units@high+#1+\bf@bitheight) -- ++(\units@wide,0) -- ++(0,-\bf@bitheight-\units@high) -- (0,\units@high+#1) -- cycle;
-  \end{tikzpicture}%
-  \end{picture}%
-  \ifcounting@words
-    \inc@bytefield@height{\unitlength * \real{\num@tall}}%
-    \global\counting@wordsfalse
-  \fi}
+    \setlength{\units@wide}{\bf@bitwidth * \bits@wide}%
+    \setlength{\units@high}{1pt * \ratio{\units@wide}{6.0pt}}%
+    \setlength{\units@tall}{#1 + \units@high}%
+    \edef\num@wide{\strip@pt\units@wide}%
+    \edef\num@tall{\strip@pt\units@tall}%
+    \edef\num@high{\strip@pt\units@high}%
+    \begin{picture}(\num@wide,\num@tall)%
+        \begin{tikzpicture}[overlay]
+            \draw[fill=#2,fill opacity=0.2]
+            (0,-\bf@bitheight) -- (0,0) -- (0,\units@high) -- (\units@wide,0) -- +(0,-\bf@bitheight) -- cycle;
+            \draw[fill=#2,fill opacity=0.2]
+            (0,\units@high+#1+\bf@bitheight) -- ++(\units@wide,0) -- ++(0,-\bf@bitheight-\units@high) -- (0,\units@high+#1) -- cycle;
+        \end{tikzpicture}%
+    \end{picture}%
+    \ifcounting@words
+        \inc@bytefield@height{\unitlength * \real{\num@tall}}%
+        \global\counting@wordsfalse
+    \fi}
 \makeatother
-
 
 \begin{document}
 \frenchspacing
 
 \pagenumbering{Alph}
 \begin{titlepage}
-\centering
+	\centering
 
-\vspace*{\stretch{2}}
-{\large \textbf{CU InSpace}}
+	\vspace*{\stretch{2}}
+	{\large \textbf{CU InSpace}}
 
-\vspace{\stretch{1}}
-{\Huge \sffamily Data Logging Format}
+	\vspace{\stretch{1}}
+	{\Huge \sffamily Data Logging Format}
 
-\vspace{\stretch{1}}
-{\large \textbf{\today}}
+	\vspace{\stretch{1}}
+	{\large \textbf{\today}}
 
-\vspace{\stretch{1}}
-Samuel Dewan
+	\vspace{\stretch{1}}
+	Samuel Dewan \\
+	Matteo Golin
 
-\vspace{\stretch{4}}
-\includegraphics[width=0.5\textwidth]{logo.png}
-\vspace{\stretch{5}}
+	\vspace{\stretch{4}}
+	\includegraphics[width=0.5\textwidth]{logo.png}
+	\vspace{\stretch{5}}
 
 \end{titlepage}
 
@@ -146,6 +136,5 @@ Samuel Dewan
 \label{sec:block-formats}
 \input{sections/block-formats.tex}
 \clearpage
-
 
 \end{document}
