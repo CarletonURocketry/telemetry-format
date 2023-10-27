@@ -1,2 +1,9 @@
+# Compiled documents (this will be handled by GitHub actions)
 *.pdf
+
+# LaTeX artifacts
 *.log
+*.fls
+*.aux
+*.fdb_latexmk
+*.synctex.gz

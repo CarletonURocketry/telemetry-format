@@ -19,7 +19,7 @@
 \usepackage[separate-uncertainty = true, multi-part-units = repeat]{siunitx}
 
 \title{CU InSpace Radio Packet Format}
-\author{Samuel Dewan}
+\author{Samuel Dewan\\Matteo Golin}
 
 % Headers and footers
 \pagestyle{fancy}
@@ -55,52 +55,44 @@
     \makebox[0pt][r]{#1\hspace{6pt}}%
 }
 \titleformat{\section}
-    {\sffamily\Large\bfseries}
-    {\marginsecnumber\thesection}
-    {0pt}
-    {}
+{\sffamily\Large\bfseries}
+{\marginsecnumber\thesection}
+{0pt}
+{}
 \titleformat{\subsection}
-    {\sffamily\large\bfseries}
-    {\marginsecnumber\thesubsection}
-    {0pt}
-    {}
+{\sffamily\large\bfseries}
+{\marginsecnumber\thesubsection}
+{0pt}
+{}
 \titleformat{\subsubsection}
-    {\sffamily\normalsize\bfseries}
-    {\marginsecnumber\thesubsubsection}
-    {0pt}
-    {}
-
-% Draft watermark
-\usepackage{eso-pic,graphicx}
-\AddToShipoutPicture*{%
-    \AtTextCenter{%
-        \makebox(0,0)[c]{\resizebox{\textwidth}{!}{%
-        \rotatebox{45}{\textsf{\textbf{\color{lightgray}DRAFT}}}}}
-    }
-}
+{\sffamily\normalsize\bfseries}
+{\marginsecnumber\thesubsubsection}
+{0pt}
+{}
 
 \begin{document}
 \frenchspacing
 
 \pagenumbering{Alph}
 \begin{titlepage}
-\centering
+    \centering
 
-\vspace*{\stretch{2}}
-{\large \textbf{CU InSpace}}
+    \vspace*{\stretch{2}}
+    {\large \textbf{CU InSpace}}
 
-\vspace{\stretch{1}}
-{\Huge \sffamily Radio Packet Format}
+    \vspace{\stretch{1}}
+    {\Huge \sffamily Radio Packet Format}
 
-\vspace{\stretch{1}}
-{\large \textbf{\today}}
+    \vspace{\stretch{1}}
+    {\large \textbf{\today}}
 
-\vspace{\stretch{1}}
-Samuel Dewan
+    \vspace{\stretch{1}}
+    Samuel Dewan \\
+    Matteo Golin
 
-\vspace{\stretch{4}}
-\includegraphics[width=0.5\textwidth]{logo.png}
-\vspace{\stretch{5}}
+    \vspace{\stretch{4}}
+    \includegraphics[width=0.5\textwidth]{logo.png}
+    \vspace{\stretch{5}}
 
 \end{titlepage}
 
