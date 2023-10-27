@@ -7,3 +7,5 @@
 *.aux
 *.fdb_latexmk
 *.synctex.gz
+*.toc
+*.out
