@@ -20,3 +20,15 @@ jobs:
           path: |
             radio-packet-format/radio_packet_format.pdf
             data-logging-format/data_logging_format.pdf
+      - name: Generate PDF page
+        run: |
+          mkdir pdfs
+          cp radio-packet-format/radio_packet_format.pdf pdfs/
+          cp data-logging-format/data_logging_format.pdf pdfs/
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: gh-pages
+          build_dir: pdfs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
