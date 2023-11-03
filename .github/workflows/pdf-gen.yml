@@ -39,9 +39,9 @@ jobs:
             </head>
             <body>
               <h1>Radio Packet Format</h1>
-              <object data="./pdfs/radio-packet-format.pdf" type="application/pdf" width="100%" height="500px"/>
+              <object data="https://github.com/CarletonURocketry/telemetry-format/blob/gh-pages/data_logging_format.pdf" type="application/pdf" width="100%" height="500px"/>
               <h1>Data Logging Format</h1>
-              <object data="./pdfs/data-logging-format.pdf" type="application/pdf" width="100%" height="500px"/>
+              <object data="https://github.com/CarletonURocketry/telemetry-format/blob/gh-pages/radio_packet_format.pdf" type="application/pdf" width="100%" height="500px"/>
             </body>
           </html>
           EOL
