@@ -5,8 +5,11 @@ files for building the specification documents, which can be viewed in PDF forma
 
 ## Accessing the Specifications
 
-Whenever changes are made, the LaTeX source files are compiled into PDF format. These PDFs are available under the
-`Actions` tab on GitHub.
+Whenever changes are made, the LaTeX source files are compiled into PDF format. The PDF files are commited to the
+`gh-pages` branch. You can view them there in GitHub's browser PDF viewer, or you can view them on the GitHub pages link
+for the repository.
+
+These PDFs are also available for download under the `Actions` tab on GitHub.
 
 1. Once you click on the tab header, select the latest workflow run named `Auto compilation`.
 2. Look for a file called `Telemetry Specifications` under the `Artifacts` header.
