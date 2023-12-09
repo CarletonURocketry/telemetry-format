@@ -3,25 +3,25 @@ its own header followed by a variable amount of data. All headers and data segme
 four bytes. The layout of a packet is shown in figure \ref{format:packet}.
 
 \begin{figure}[h]
-	\centering
-	\begin{bytefield}{16}
-		\wordbox{2}{Packet Header} \\
-		\begin{rightwordgroup}{Block 1}
-			\wordbox{2}{Block Header} \\
-			\wordbox[lrt]{1}{Block Contents} \\
-			\skippedwords \\
-			\wordbox[lrb]{1}{}
-		\end{rightwordgroup} \\
-		\wordbox[]{1}{$\vdots$} \\[1ex]
-		\begin{rightwordgroup}{Block $N$}
-			\wordbox{2}{Block Header} \\
-			\wordbox[lrt]{1}{Block Contents} \\
-			\skippedwords \\
-			\wordbox[lrb]{1}{}
-		\end{rightwordgroup} \\
-	\end{bytefield}
-	\caption{Layout of radio packet}
-	\label{format:packet}
+    \centering
+    \begin{bytefield}{16}
+        \wordbox{2}{Packet Header} \\
+        \begin{rightwordgroup}{Block 1}
+            \wordbox{2}{Block Header} \\
+            \wordbox[lrt]{1}{Block Contents} \\
+            \skippedwords \\
+            \wordbox[lrb]{1}{}
+        \end{rightwordgroup} \\
+        \wordbox[]{1}{$\vdots$} \\[1ex]
+        \begin{rightwordgroup}{Block $N$}
+            \wordbox{2}{Block Header} \\
+            \wordbox[lrt]{1}{Block Contents} \\
+            \skippedwords \\
+            \wordbox[lrb]{1}{}
+        \end{rightwordgroup} \\
+    \end{bytefield}
+    \caption{Layout of radio packet}
+    \label{format:packet}
 \end{figure}
 
 \subsection{Packet Header}
@@ -30,17 +30,17 @@ length as well as other information which describes the packet as a whole. The p
 described in figure \ref{format:packet-header}.
 
 \begin{figure}[h]
-	\centering
-	\begin{bytefield}[bitwidth=0.03\linewidth]{32}
-		\bitheader{0-31} \\
-		\wordbox[lrt]{1}{Call Sign} \\
-		\bitbox[lrb]{16}{} & \bitbox{6}{Length} & \bitbox{5}{Version} &
-		\bitbox{5}{\color{lightgray}\rule{\width}{\height}} \\
-		\bitbox{4}{Src. Addr.} & \bitbox{12}{Packet Number} &
-		\bitbox{16}{\color{lightgray}\rule{\width}{\height}} \\
-	\end{bytefield}
-	\caption{Packet header format}
-	\label{format:packet-header}
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox[lrt]{1}{Call Sign} \\
+        \bitbox[lrb]{16}{} & \bitbox{6}{Length} & \bitbox{5}{Version} &
+        \bitbox{5}{\color{lightgray}\rule{\width}{\height}} \\
+        \bitbox{4}{Src. Addr.} & \bitbox{12}{Packet Number} &
+        \bitbox{16}{\color{lightgray}\rule{\width}{\height}} \\
+    \end{bytefield}
+    \caption{Packet header format}
+    \label{format:packet-header}
 \end{figure}
 
 \paragraph{Call Sign}
@@ -60,8 +60,8 @@ The following equations show how the length of a packet in bytes can be converte
 value and vice versa.
 
 \begin{align*}
-	\text{Length}                 & = \frac{\text{packet length in bytes}}{4} - 1 \\
-	\text{packet length in bytes} & = \left(\text{Length} + 1\right) \cdot 4
+    \text{Length}                 & = \frac{\text{packet length in bytes}}{4} - 1 \\
+    \text{packet length in bytes} & = \left(\text{Length} + 1\right) \cdot 4
 \end{align*}
 
 \paragraph{Version}
@@ -74,19 +74,19 @@ This field indicates the source of the packet. Possible device addresses are lis
 0xF is not a valid source address.
 
 \begin{table*}
-	\centering
-	\begin{tabular}{@{}ll@{}}
-		\toprule
-		Address         & Device                  \\
-		\midrule
-		0x0             & Ground Station          \\
-		0x1             & Rocket                  \\
-		0x2 through 0xE & Reserved for future use \\
-		0xF             & Multicast               \\
-		\bottomrule
-	\end{tabular}
-	\caption{Device addresses}
-	\label{table:dev-addresses}
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Address         & Device                  \\
+        \midrule
+        0x0             & Ground Station          \\
+        0x1             & Rocket                  \\
+        0x2 through 0xE & Reserved for future use \\
+        0xF             & Multicast               \\
+        \bottomrule
+    \end{tabular}
+    \caption{Device addresses}
+    \label{table:dev-addresses}
 \end{table*}
 
 \paragraph{Packet Number}
@@ -100,15 +100,15 @@ as well as the blocks’s intended recipient. The block header is formatted as d
 \ref{format:block-header}.
 
 \begin{figure}[h]
-	\centering
-	\begin{bytefield}[bitwidth=0.03\linewidth]{32}
-		\bitheader{0-31} \\
-		\bitbox{5}{Block Length} & \bitbox{1}{\tiny Sig.} &
-		\bitbox{4}{Type} & \bitbox{6}{Subtype} & \bitbox{4}{\small Dest. Addr.} &
-		\bitbox{12}{\color{lightgray}\rule{\width}{\height}}
-	\end{bytefield}
-	\caption{Block header format}
-	\label{format:block-header}
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \bitbox{5}{Block Length} & \bitbox{1}{\tiny Sig.} &
+        \bitbox{4}{Type} & \bitbox{6}{Subtype} & \bitbox{4}{\small Dest. Addr.} &
+        \bitbox{12}{\color{lightgray}\rule{\width}{\height}}
+    \end{bytefield}
+    \caption{Block header format}
+    \label{format:block-header}
 \end{figure}
 
 \paragraph{Block Length}
@@ -124,8 +124,8 @@ The following equations show how the length of a block in bytes can be converted
 value and vice versa.
 
 \begin{align*}
-	\text{Block Length}          & = \frac{\text{block length in bytes}}{4} - 1   \\
-	\text{block length in bytes} & = \left(\text{Block Length} + 1\right) \cdot 4
+    \text{Block Length}          & = \frac{\text{block length in bytes}}{4} - 1   \\
+    \text{block length in bytes} & = \left(\text{Block Length} + 1\right) \cdot 4
 \end{align*}
 
 If the length of a block is such that some or all of the block would exceed the total packet length, then the block is
@@ -139,19 +139,19 @@ The block \emph{Type} field indicates the purpose of the block. Possible values 
 \ref{table:block-types}. Block types are discussed in more detail in section \ref{sec:block-formats}.
 
 \begin{table*}
-	\centering
-	\begin{tabular}{@{}ll@{}}
-		\toprule
-		Value           & Block Type              \\
-		\midrule
-		0x0             & Control                 \\
-		0x1             & Command                 \\
-		0x2             & Data                    \\
-		0x3 through 0xF & Reserved for future use \\
-		\bottomrule
-	\end{tabular}
-	\caption{Block types}
-	\label{table:block-types}
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Value           & Block Type              \\
+        \midrule
+        0x0             & Control                 \\
+        0x1             & Command                 \\
+        0x2             & Data                    \\
+        0x3 through 0xF & Reserved for future use \\
+        \bottomrule
+    \end{tabular}
+    \caption{Block types}
+    \label{table:block-types}
 \end{table*}
 
 \paragraph{Subtype}
