@@ -1,9 +1,9 @@
 Blocks have a type which indicates their purpose. The possible block types are listed in table \ref{table:block-types}.
-This section describes the possible block subtypes and their associated data formats.
+This section describes the possible block sub-types and their associated data formats.
 
 \subsection{Control Blocks}
-Command blocks contain instructions or requests for information. The possible subtypes for command blocks are listed in
-table \ref{table:control-subtypes}.
+Command blocks contain instructions or requests for information. The possible sub-types for command blocks are listed
+in table \ref{table:control-subtypes}.
 
 \begin{table*}[htb]
     \centering
@@ -12,7 +12,7 @@ table \ref{table:control-subtypes}.
         Value            & Description             \\
         \midrule
         0x0              & Signal report           \\
-        0x1              & Command Acknowledgment  \\
+        0x1              & Command Acknowledgement \\
         0x2              & Command Nonce Request   \\
         0x3              & Command Nonce           \\
         0x4              & Beacon                  \\
@@ -73,11 +73,11 @@ not set then this block is a response signal report.
 
 \subsubsection{Beacon}
 The beacon frame is used while searching for a peer device. See section \ref{sec:dynamic-settings} for more information
-on search mode operation. This block subtype does not have any payload data.
+on search mode operation. This block sub-type does not have any payload data.
 
 \subsection{Command Blocks}
-Command blocks contain instructions or requests for information. The possible subtypes for command blocks are listed in
-table \ref{table:command-subtypes}.
+Command blocks contain instructions or requests for information. The possible sub-types for command blocks are listed
+in table \ref{table:command-subtypes}.
 
 \begin{table*}[htb]
     \centering
@@ -92,41 +92,41 @@ table \ref{table:command-subtypes}.
         0x4 through 0x3F & Reserved for future use \\
         \bottomrule
     \end{tabular}
-    \caption{Command Block Subtypes}
+    \caption{Command Block Sub-types}
     \label{table:command-subtypes}
 \end{table*}
 
 \subsubsection{Reset Rocket Avionics}
 When this block is received by the rocket avionics the rocket’s microcontroller will be reset. If this block’s ACK
-requested bit is set the acknowledgment will be sent before the avionics reset. The acknowledgments for any other
-blocks in the same packet as the reset command are not guaranteed to be sent. This block subtype does not have any
+requested bit is set the acknowledgement will be sent before the avionics reset. The acknowledgements for any other
+blocks in the same packet as the reset command are not guaranteed to be sent. This block sub-type does not have any
 payload data.
 
 \subsubsection{Request Telemetry Data}
 This command is used to explicitly request that the rocket avionics sent particular telemetry data back. Up to four
 different telemetry data blocks can be requested per command. The payload data for the request telemetry data command
-is made up of four bytes, each of which may indicate a requested data block subtype. The format of the request block
+is made up of four bytes, each of which may indicate a requested data block sub-type. The format of the request block
 payload is described in figure \ref{format:req-telem-data}.
 
 \begin{figure}[h]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
-        \bitbox{6}{Data Subtype} &
+        \bitbox{6}{Data Sub-type} &
         \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
-        \bitbox{6}{Data Subtype} &
+        \bitbox{6}{Data Sub-type} &
         \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
-        \bitbox{6}{Data Subtype} &
+        \bitbox{6}{Data Sub-type} &
         \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
-        \bitbox{6}{Data Subtype} &
+        \bitbox{6}{Data Sub-type} &
         \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U}
     \end{bytefield}
     \caption{Telemetry Data Request Payload Format}
     \label{format:req-telem-data}
 \end{figure}
 
-\paragraph{Data Subtype}
-The subtype of data block that is being requested.
+\paragraph{Data Sub-type}
+The sub-type of data block that is being requested.
 
 \paragraph{Used (U)}
 For each of the four bytes in the request telemetry packet’s payload this bit indicates whether the byte contains a
@@ -134,7 +134,7 @@ valid request. Any bytes for which this bit is not set should be ignored.
 
 \subsubsection{Deploy parachute}
 This command indicates to the rocket avionics that it should immediately deploy the drogue parachute. This block
-subtype does not have any payload data.
+sub-type does not have any payload data.
 
 \subsubsection{Tare sensors}
 This command tells the rocket to zero out all of its sensors. This command should only be send when the rocket is on
@@ -142,7 +142,7 @@ the pad ready to launch. The rocket avionics can assume that when it receives th
 correct orientation for launch.
 
 \subsection{Data Blocks}
-Data blocks contain telemetry data. The possible subtypes data blocks are listed in table \ref{table:data-subtypes}.
+Data blocks contain telemetry data. The possible sub-types data blocks are listed in table \ref{table:data-subtypes}.
 
 \begin{table*}[htb]
     \centering
@@ -172,13 +172,13 @@ Data blocks contain telemetry data. The possible subtypes data blocks are listed
 \subsubsection{Debug Message}
 
 Debug messages are string messages intended to provide human readable debugging output. They are encoded as UTF-8
-strings and do not require a terminating NUL character because the string length can be extrapolated from the block
+strings and do not require a terminating NULL character because the string length can be extrapolated from the block
 length. Every debug message is preceded by a 32 bit unsigned mission time value.
 
 Note that like all other data blocks debug messages must be a multiple of four bytes long. If the string to be logged
-is not a multiple of four bytes it must be padded with NUL characters at the end to make it fit the required alignment.
-The length recorded in the block header must be a multiple of four, and therefore must include any NUL padding bytes at
-the end of the string.
+is not a multiple of four bytes it must be padded with NULL characters at the end to make it fit the required
+alignment. The length recorded in the block header must be a multiple of four, and therefore must include any NULL
+padding bytes at the end of the string.
 
 \subsubsection{Status}
 
@@ -232,7 +232,7 @@ The current state of the altimeter (if enabled). This field will contain one of 
 \ref{table:sensor-state}.
 
 \paragraph{IMU State}
-The current state of the inertial measurment unit (if enabled). This field will contain one of the values from table
+The current state of the inertial measurement unit (if enabled). This field will contain one of the values from table
 \ref{table:sensor-state}.
 
 \begin{table*}[htb]
@@ -284,7 +284,7 @@ The number of blocks of telemetry data that have been recorded to the SD card du
 refers to storage device blocks (512 byte units) rather than telemetry format blocks.
 
 \paragraph{SD Checkouts Missed}
-The number of telemtery format data blocks that have been dropped because there was not enough buffer space free to log
+The number of telemetry format data blocks that have been dropped because there was not enough buffer space free to log
 them to the SD card.
 
 \subsubsection{Altitude}
@@ -484,7 +484,7 @@ The fix type as shown in table \ref{table:gnss-fix-type}.
 \subsubsection{GNSS Metadata}
 
 The format of the GNSS location block is described in figure \ref{format:telem-gnss-metadata}. The length of this block
-varies, after the GLONASS satellites in use bitfield 4 bytes of information is encoded for each satellite in view of
+varies, after the GLONASS satellites in use bit field 4 bytes of information is encoded for each satellite in view of
 the GNSS module. Note that not all satellites which are in view will also be in use.
 
 \begin{figure}[h]
@@ -517,11 +517,11 @@ The mission time when the fix was received.
 
 \paragraph{GPS Satellites in Use}
 
-This bitfield indicates which GPS satellites are used in the current fix. Each bit position represents a GPS
+This bit field indicates which GPS satellites are used in the current fix. Each bit position represents a GPS
 pseudo-random noise sequence.
 
 \paragraph{GLONASS Satellites in Use}
-This bitfield indicates which GLONASS satellites are used in the current fix. Each bit position represents a slot
+This bit field indicates which GLONASS satellites are used in the current fix. Each bit position represents a slot
 number. Bit zero corresponds to slot 65, bit 1 to slot 66 and so on.
 
 \paragraph{Elevation}
@@ -569,7 +569,7 @@ The time of the last measurement in the block.
 
 \paragraph{A/G SR Div}
 The accelerometer/gyroscope sample rate divisor field can be used to calculate the sample rate for the accelerometer
-and gyrosope. The folowing equation can be used to find the sample rate:
+and gyroscope. The following equation can be used to find the sample rate:
 
 $$
     \text{sample rate} = \frac{1000}{\text{A/G SR Div} + 1}
@@ -692,7 +692,7 @@ This field encodes the gyroscope low pass filter bandwidth. The possible values 
         \bitbox{1}{O} & \bitbox{1}{R} &
         \bitbox{3}{\color{lightgray}\rule{\width}{\height}}
     \end{bytefield}
-    \caption{MPU9250 IMU Measurement Entry Foramt}
+    \caption{MPU9250 IMU Measurement Entry Format}
     \label{format:telem-mpu9250-imu-entry}
 \end{figure}
 
@@ -703,10 +703,10 @@ The acceleration data fields are big endian values encoded in two's complement.
 The angular velocity data fields are big endian values encoded in two's complement.
 
 \paragraph{Mag. *}
-The magnetic flux denisity data fields are little endian values encoded in two's complement.
+The magnetic flux density data fields are little endian values encoded in two's complement.
 
 \paragraph{O}
-This field indicates whether there was an overflow while measuring the magnetic flux denisity. If this bit is set the
+This field indicates whether there was an overflow while measuring the magnetic flux density. If this bit is set the
 magnetometer data for the sample is not valid.
 
 \paragraph{R}
@@ -794,7 +794,7 @@ in table \ref{table:kx134-fsr}.
 \end{table*}
 
 \paragraph{Roll}
-This field encode the accelerometer's configured low pass filter rolloff. The possible values for this field are shown
+This field encode the accelerometer's configured low pass filter roll-off. The possible values for this field are shown
 in table \ref{table:kx134-rolloff}.
 
 \begin{table*}[htb]
