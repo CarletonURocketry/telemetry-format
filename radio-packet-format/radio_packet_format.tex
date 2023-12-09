@@ -5,6 +5,7 @@
 \usepackage[top=2.54cm,bottom=2.54cm,left=4cm,right=2.5cm,headheight=14pt]{geometry}
 \usepackage{graphicx} % Include images
 \usepackage[hidelinks,bookmarksnumbered]{hyperref} % Have nice links
+\usepackage[parfill]{parskip} % Allows us to remove paragraph indenting
 \usepackage[all]{hypcap}
 \usepackage{fancyhdr}
 \usepackage[calcwidth]{titlesec}
@@ -19,11 +20,12 @@
 \usepackage{pgf-umlsd}
 \usepackage[separate-uncertainty = true, multi-part-units = repeat]{siunitx}
 
+% DOCUMENT INFORMATION %
 \title{CU InSpace Radio Packet Format}
 \author{Samuel Dewan\\Matteo Golin}
 \date{\today}
 
-% Headers and footers
+% HEADERS AND FOOTERS %
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{CU InSpace - Radio Packet Format}
@@ -67,6 +69,9 @@
 {\marginsecnumber\thesubsubsection}
 {0pt}
 {}
+
+% No indents on paragraphs
+\setlength{\parindent}{0cm}
 
 \begin{document}
 
