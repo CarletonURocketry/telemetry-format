@@ -1,0 +1,39 @@
+\subsubsection{Angular Velocity}
+
+The angular velocity block is used to convey generic 3-axis gyroscope data. This block is intended to abstract over the
+details of any individual gyroscope. The format of the acceleration block payload is described in figure
+\ref{format:telem-angular-velocity}.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{16}{Full Scale Range} & \bitbox{16}{X-Axis} \\
+        \bitbox{16}{Y-Axis} & \bitbox{16}{Z-Axis}
+    \end{bytefield}
+    \caption{Angular Velocity Data Payload Format}
+    \label{format:telem-angular-velocity}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Full Scale Range}
+The full scale range of the gyroscope in degrees per second. This value represents the maximum and minimum angular
+velocity that can be measured, for example a value of 2000 in this field represents a full scale range of \SI{\pm
+    2000}{degrees per second}. If the resolution of the gyroscope is less than 16 bits the full scale range must be
+adjusted to compensate, for example a 12 bit gyroscope with a \SI{\pm 500}{degree per second} full scale range would
+use the value 4000 for this field.
+
+This value can be used to calculate the gyroscope sensitivity, which in turn can be used to convert the acceleration
+measurements for each axis into useful units. For a measurement $m$ with a full scale range $f$ the angular velocity in
+degrees per second can be found like this:
+
+$$
+    \text{angular velocity} = m \cdot \frac{f}{2^{15}}
+$$
+
+\paragraph{*-Axis}
+These fields represent the angular velocity measurements for each axis. These fields are signed integers in two's
+complement format.

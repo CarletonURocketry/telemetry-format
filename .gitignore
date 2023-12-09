@@ -9,3 +9,6 @@
 *.synctex.gz
 *.toc
 *.out
+
+# Files with leading . and underscore are compiler generated
+._*

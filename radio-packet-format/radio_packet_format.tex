@@ -1,27 +1,31 @@
 \documentclass[11pt,letterpaper]{article}
+
+% PACKAGES
 \usepackage[utf8]{inputenc}
 \usepackage[top=2.54cm,bottom=2.54cm,left=4cm,right=2.5cm,headheight=14pt]{geometry}
-\usepackage{graphicx}
-\usepackage[hidelinks,bookmarksnumbered]{hyperref}
+\usepackage{graphicx} % Include images
+\usepackage[hidelinks,bookmarksnumbered]{hyperref} % Have nice links
+\usepackage[parfill]{parskip} % Allows us to remove paragraph indenting
 \usepackage[all]{hypcap}
 \usepackage{fancyhdr}
-%\usepackage{sectsty}
 \usepackage[calcwidth]{titlesec}
 \usepackage{chngcntr}
-\usepackage{bytefield}
+\usepackage{bytefield} % For illustrations of bit fields
+\usepackage{amsmath} % Standard math symbols
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage[section]{placeins}
 \usepackage[style=iso]{datetime2}
 \usepackage{pgf-umlsd}
-\usepackage{amsmath}
 \usepackage[separate-uncertainty = true, multi-part-units = repeat]{siunitx}
 
+% DOCUMENT INFORMATION %
 \title{CU InSpace Radio Packet Format}
 \author{Samuel Dewan\\Matteo Golin}
+\date{\today}
 
-% Headers and footers
+% HEADERS AND FOOTERS %
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{CU InSpace - Radio Packet Format}
@@ -31,6 +35,7 @@
 
 % More space around figures
 \setlength\intextsep{18pt}
+
 % Per section figure and table numbers
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
@@ -47,13 +52,8 @@
 % More space between table rows
 \renewcommand{\arraystretch}{1.2}
 
-% Setup for inline code
-\lstset{language=C,keywordstyle={\bfseries \color{blue!80!black}}}
-
 % Section numbers in the margin
-\newcommand{\marginsecnumber}[1]{%
-    \makebox[0pt][r]{#1\hspace{6pt}}%
-}
+\newcommand{\marginsecnumber}[1]{\makebox[0pt][r]{#1\hspace{6pt}}}
 \titleformat{\section}
 {\sffamily\Large\bfseries}
 {\marginsecnumber\thesection}
@@ -70,59 +70,52 @@
 {0pt}
 {}
 
+% No indents on paragraphs
+\setlength{\parindent}{0cm}
+
 \begin{document}
-\frenchspacing
 
-\pagenumbering{Alph}
+% TITLE PAGE %
 \begin{titlepage}
-	\centering
+    \centering
 
-	\vspace*{\stretch{2}}
-	{\large \textbf{CU InSpace}}
+    \vspace*{\stretch{2}}
+    {\large \textbf{CU InSpace}}
 
-	\vspace{\stretch{1}}
-	{\Huge \sffamily Radio Packet Format}
+    \vspace{\stretch{1}}
+    {\Huge \sffamily Radio Packet Format}
 
-	\vspace{\stretch{1}}
-	{\large \textbf{\today}}
+    \vspace{\stretch{1}}
+    {\large \textbf{\today}}
 
-	\vspace{\stretch{1}}
-	Samuel Dewan \\
-	Matteo Golin
+    \vspace{\stretch{1}}
+    Samuel Dewan \\
+    Matteo Golin
 
-	\vspace{\stretch{4}}
-	\includegraphics[width=0.5\textwidth]{logo.png}
-	\vspace{\stretch{5}}
-
+    \vspace{\stretch{4}}
+    \includegraphics[width=0.5\textwidth]{logo.png}
+    \vspace{\stretch{5}}
 \end{titlepage}
 
-\pagenumbering{Roman}
+% TABLE OF CONTENTS %
+\pagenumbering{Roman} % Should use Roman numerals
 \tableofcontents
 \clearpage
-\pagenumbering{arabic}
 
-\section{Introduction}
-\label{sec:introduction}
+% DOCUMENT SECTIONS %
+\pagenumbering{arabic} % Should use Arabic numerals
 \input{sections/introduction.tex}
 \clearpage
 
-\section{Packet Layout}
-\label{sec:packet-layout}
-\input{sections/packet_layout.tex}
+\input{sections/packets/packet_layout.tex}
 \clearpage
 
-\section{Block Formats}
-\label{sec:block-formats}
-\input{sections/block_formats.tex}
+\input{sections/packets/blocks/block_formats.tex}
 \clearpage
 
-\section{Other Considerations}
-\label{sec:other-considerations}
 \input{sections/other_considerations.tex}
 \clearpage
 
-\section{Cryptographic Signature Support}
-\label{sec:signatures}
 \input{sections/signatures.tex}
 
 \end{document}

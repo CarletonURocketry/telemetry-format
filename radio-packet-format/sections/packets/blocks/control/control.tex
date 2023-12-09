@@ -1,0 +1,26 @@
+\subsection{Control Blocks}
+Control blocks contain instructions or requests for information. The possible sub-types for command blocks are listed
+in table \ref{table:control-subtypes}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Value            & Description             \\
+        \midrule
+        0x0              & Signal report           \\
+        0x1              & Command Acknowledgement \\
+        0x2              & Command Nonce Request   \\
+        0x3              & Command Nonce           \\
+        0x4              & Beacon                  \\
+        0x5              & Beacon Response         \\
+        0x6 through 0x3F & Reserved for future use \\
+        \bottomrule
+    \end{tabular}
+    \caption{Control Block Subtypes}
+    \label{table:control-subtypes}
+\end{table*}
+
+% CONTROL BLOCK TYPES %
+\input{sections/packets/blocks/control/signalreport.tex}
+\input{sections/packets/blocks/control/beacon.tex}
