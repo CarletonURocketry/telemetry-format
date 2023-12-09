@@ -1,0 +1,66 @@
+\subsection{Command Blocks}
+
+Command blocks contain instructions or requests for information. The possible sub-types for command blocks are listed
+in table \ref{table:command-subtypes}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Value            & Description             \\
+        \midrule
+        0x0              & Reset rocket avionics   \\
+        0x1              & Request telemetry data  \\
+        0x2              & Deploy parachute        \\
+        0x3              & Tare sensors            \\
+        0x4 through 0x3F & Reserved for future use \\
+        \bottomrule
+    \end{tabular}
+    \caption{Command Block Sub-types}
+    \label{table:command-subtypes}
+\end{table*}
+
+\subsubsection{Reset Rocket Avionics}
+When this block is received by the rocket avionics the rocket’s microcontroller will be reset. If this block’s ACK
+requested bit is set the acknowledgement will be sent before the avionics reset. The acknowledgements for any other
+blocks in the same packet as the reset command are not guaranteed to be sent. This block sub-type does not have any
+payload data.
+
+\subsubsection{Request Telemetry Data}
+This command is used to explicitly request that the rocket avionics sent particular telemetry data back. Up to four
+different telemetry data blocks can be requested per command. The payload data for the request telemetry data command
+is made up of four bytes, each of which may indicate a requested data block sub-type. The format of the request block
+payload is described in figure \ref{format:req-telem-data}.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \bitbox{6}{Data Sub-type} &
+        \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+        \bitbox{6}{Data Sub-type} &
+        \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+        \bitbox{6}{Data Sub-type} &
+        \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U} &
+        \bitbox{6}{Data Sub-type} &
+        \bitbox{1}{\color{lightgray}\rule{\width}{\height}} & \bitbox{1}{U}
+    \end{bytefield}
+    \caption{Telemetry Data Request Payload Format}
+    \label{format:req-telem-data}
+\end{figure}
+
+\paragraph{Data Sub-type}
+The sub-type of data block that is being requested.
+
+\paragraph{Used (U)}
+For each of the four bytes in the request telemetry packet’s payload this bit indicates whether the byte contains a
+valid request. Any bytes for which this bit is not set should be ignored.
+
+\subsubsection{Deploy parachute}
+This command indicates to the rocket avionics that it should immediately deploy the drogue parachute. This block
+sub-type does not have any payload data.
+
+\subsubsection{Tare sensors}
+This command tells the rocket to zero out all of its sensors. This command should only be send when the rocket is on
+the pad ready to launch. The rocket avionics can assume that when it receives this command it is stationary and in the
+correct orientation for launch.

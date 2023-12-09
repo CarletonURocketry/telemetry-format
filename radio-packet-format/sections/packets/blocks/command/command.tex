@@ -1,0 +1,74 @@
+\subsection{Control Blocks}
+Command blocks contain instructions or requests for information. The possible sub-types for command blocks are listed
+in table \ref{table:control-subtypes}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Value            & Description             \\
+        \midrule
+        0x0              & Signal report           \\
+        0x1              & Command Acknowledgement \\
+        0x2              & Command Nonce Request   \\
+        0x3              & Command Nonce           \\
+        0x4              & Beacon                  \\
+        0x5              & Beacon Response         \\
+        0x6 through 0x3F & Reserved for future use \\
+        \bottomrule
+    \end{tabular}
+    \caption{Control Block Subtypes}
+    \label{table:control-subtypes}
+\end{table*}
+
+\subsubsection{Signal Report}
+A signal report contains information designed to allow the recipient to assess the quality of the radio link. Signal
+reports may be sent at any time by any party and should contain information pertaining to the last packet received from
+the block's destination device.
+
+Signal reports follow a query response structure. An initial signal report that is marked as a request is sent first.
+The recipient of this request then responds with a signal report that is not marked as a request.
+
+The format of the payload data for a signal report is described in figure \ref{format:signal-report}.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \bitbox{8}{SNR} & \bitbox{8}{RSSI} & \bitbox{2}{\tiny{Radio}} &
+        \bitbox{6}{TX Power} \bitbox{7}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{1}{\rotatebox{90}{\tiny{Req.}}}
+    \end{bytefield}
+    \caption{Signal Report Payload Format}
+    \label{format:signal-report}
+\end{figure}
+
+\paragraph{SNR}
+Signal to Noise Ratio for the last packet received from the destination device in units of \SI{1}{\decibel\per LSB}.
+This value is encoded as a one byte signed integer in twos compliment format.
+
+In a response signal report this should always be the SNR for the packet that contained the request.
+
+\paragraph{RSSI}
+Received Signal Strength Indication for the last packet received from the destination device in units of
+\SI{1}{\decibel\per LSB}. This value is encoded as a one byte signed integer in twos compliment format
+
+In a response signal report this should always be the RSSI for the packet that contained the request.
+
+\paragraph{Radio}
+The index of the radio used by the device that send the requesting signal report. This field is not meaningful to the
+recipient of the request, the recipient simply echos it back to the sender of the request in the response signal
+report. This field is encoded as a two bit unsigned integer.
+
+\paragraph{TX Power}
+The transmit power with which the packet containing the signal report block was sent in units of \SI{1}{\decibel\per
+    LSB}. This value is encoded as a six bit signed integer in twos compliment format
+
+\paragraph{Request}
+When set, this bit indicates that this is a request signal report and that the receiver should respond. If this bit is
+not set then this block is a response signal report.
+
+\subsubsection{Beacon}
+The beacon frame is used while searching for a peer device. See section \ref{sec:dynamic-settings} for more information
+on search mode operation. This block sub-type does not have any payload data.
+
