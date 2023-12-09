@@ -1,0 +1,172 @@
+\subsubsection{MPU9250 IMU Data}
+
+The format of the MPU9250 IMU data block is described in figure \ref{format:telem-mpu9250-imu}. This block can contain
+a variable amount of acceleration, angular velocity and magnetic flux density data. The format of each individual data
+entry is described in figure \ref{format:telem-mpu9250-imu-entry}. Note that since each entry is 21 bytes long entries
+after the first one may not be properly aligned.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{8}{A/G SR Div} & \bitbox{1}{\rotatebox{90}{\tiny MS}} &
+        \bitbox{2}{\tiny A FSR} & \bitbox{2}{\tiny G FSR} &
+        \bitbox{3}{A BW} & \bitbox{3}{G BW} &
+        \bitbox{13}{\color{lightgray}\rule{\width}{\height}} &
+        \wordbox[lr]{1}{IMU Data} \\
+        \skippedwords \\
+        \wordbox[lrb]{1}{} \\
+    \end{bytefield}
+    \caption{MPU9250 Inertial Measurement Unit Data Payload Format}
+    \label{format:telem-mpu9250-imu}
+\end{figure}
+
+\paragraph{Measurement Time}
+The time of the last measurement in the block.
+
+\paragraph{A/G SR Div}
+The accelerometer/gyroscope sample rate divisor field can be used to calculate the sample rate for the accelerometer
+and gyroscope. The following equation can be used to find the sample rate:
+
+$$
+    \text{sample rate} = \frac{1000}{\text{A/G SR Div} + 1}
+$$
+
+\paragraph{MS}
+This field encodes the sample rate for the magnetometer. The possible values for this field are shown in table
+\ref{table:mpu9250-mag-odr}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        MS Value & Sample Rate        \\
+        \midrule
+        0x0      & {\SI{8}{\hertz}}   \\
+        0x1      & {\SI{100}{\hertz}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{MPU9250 Magnetometer Sample Rate Values}
+    \label{table:mpu9250-mag-odr}
+\end{table*}
+
+\paragraph{A FSR}
+This field encodes the full scale range for the accelerometer. The possible values for this field are shown in table
+\ref{table:mpu9250-a-fsr}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Accel. FSR Value & Full Scale Range \\
+        \midrule
+        0x0              & {\SI{\pm 2}{g}}  \\
+        0x1              & {\SI{\pm 4}{g}}  \\
+        0x2              & {\SI{\pm 8}{g}}  \\
+        0x3              & {\SI{\pm 16}{g}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{MPU9250 Accelerometer Full Scale Range Values}
+    \label{table:mpu9250-a-fsr}
+\end{table*}
+
+\paragraph{G FSR}
+This field encodes the full scale range for the gyroscope. The possible values for this field are shown in table
+\ref{table:mpu9250-g-fsr}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Gyro. FSR Value & Full Scale Range                    \\
+        \midrule
+        0x0             & {\SI{\pm 250}{\degree\per\second}}  \\
+        0x1             & {\SI{\pm 500}{\degree\per\second}}  \\
+        0x2             & {\SI{\pm 1000}{\degree\per\second}} \\
+        0x3             & {\SI{\pm 2000}{\degree\per\second}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{MPU9250 Gyroscope Full Scale Range Values}
+    \label{table:mpu9250-g-fsr}
+\end{table*}
+
+\paragraph{A BW}
+This field encodes the accelerometer low pass filter bandwidth. The possible values for this field are shown in table
+\ref{table:mpu9250-a-bw}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Accel. BW Value & Low Pass Filter \SI{3}{\decibel} Bandwidth \\
+        \midrule
+        0x0             & {\SI{5.05}{\hertz}}                        \\
+        0x1             & {\SI{10.2}{\hertz}}                        \\
+        0x2             & {\SI{21.2}{\hertz}}                        \\
+        0x3             & {\SI{44.8}{\hertz}}                        \\
+        0x4             & {\SI{99}{\hertz}}                          \\
+        0x5             & {\SI{218.1}{\hertz}}                       \\
+        0x6             & {\SI{420}{\hertz}}                         \\
+        \bottomrule
+    \end{tabular}
+    \caption{MPU9250 Accelerometer Low Pass Filter Bandwidth Values}
+    \label{table:mpu9250-a-bw}
+\end{table*}
+
+\paragraph{G BW}
+This field encodes the gyroscope low pass filter bandwidth. The possible values for this field are shown in table
+\ref{table:mpu9250-g-bw}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Gyro. BW Value & Low Pass Filter \SI{3}{\decibel} Bandwidth \\
+        \midrule
+        0x0            & {\SI{5}{\hertz}}                           \\
+        0x1            & {\SI{10}{\hertz}}                          \\
+        0x2            & {\SI{20}{\hertz}}                          \\
+        0x3            & {\SI{41}{\hertz}}                          \\
+        0x4            & {\SI{92}{\hertz}}                          \\
+        0x5            & {\SI{184}{\hertz}}                         \\
+        0x6            & {\SI{250}{\hertz}}                         \\
+        \bottomrule
+    \end{tabular}
+    \caption{MPU9250 Gyroscope Low Pass Filter Bandwidth Values}
+    \label{table:mpu9250-g-bw}
+\end{table*}
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \bitbox{16}{Accel. X} & \bitbox{16}{Accel. Y} \\
+        \bitbox{16}{Accel. Z} & \bitbox{16}{Temperature} \\
+        \bitbox{16}{Gyro. X} & \bitbox{16}{Gyro. Y} \\
+        \bitbox{16}{Gyro. Z} & \bitbox{16}{Mag. X} \\
+        \bitbox{16}{Mag. Y} & \bitbox{16}{Mag. Z} \\
+        \bitbox{3}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{1}{O} & \bitbox{1}{R} &
+        \bitbox{3}{\color{lightgray}\rule{\width}{\height}}
+    \end{bytefield}
+    \caption{MPU9250 IMU Measurement Entry Format}
+    \label{format:telem-mpu9250-imu-entry}
+\end{figure}
+
+\paragraph{Accel. *}
+The acceleration data fields are big endian values encoded in two's complement.
+
+\paragraph{Gyro. *}
+The angular velocity data fields are big endian values encoded in two's complement.
+
+\paragraph{Mag. *}
+The magnetic flux density data fields are little endian values encoded in two's complement.
+
+\paragraph{O}
+This field indicates whether there was an overflow while measuring the magnetic flux density. If this bit is set the
+magnetometer data for the sample is not valid.
+
+\paragraph{R}
+This field indicates the resolution of the magnetometer data. If this bit is set resolution is 16 bits, otherwise it is
+14 bits.

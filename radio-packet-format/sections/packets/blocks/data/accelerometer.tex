@@ -1,0 +1,119 @@
+\subsubsection{KX134-1211 Accelerometer Data}
+
+The format of the KX134-1211 accelerometer data block is described in figure \ref{format:telem-kx134-accel}. This block
+can contain a variable amount of acceleration data. This data will be in sets of three measurements (x, y, z), each
+measurement is either 8 or 16 bits long and is encoded in two's complement format.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{4}{ODR} & \bitbox{2}{\tiny Range} &
+        \bitbox{1}{\rotatebox{90}{\tiny Roll}} &
+        \bitbox{1}{\rotatebox{90}{\tiny Res}} &
+        \bitbox{6}{\color{lightgray}\rule{\width}{\height}} &
+        \bitbox{2}{\small Pad} &
+        \bitbox[lrt]{16}{} \\
+        \wordbox[lr]{1}{Acceleration Data} \\
+        \skippedwords \\
+        \wordbox[lrb]{1}{} \\
+    \end{bytefield}
+    \caption{KX134-1211 Accelerometer Data Payload Format}
+    \label{format:telem-kx134-accel}
+\end{figure}
+
+\paragraph{Measurement Time}
+The time of the last measurement in the block.
+
+\paragraph{ODR}
+This field encodes the output data rate at which the accelerometer is configured. The possible values for this field
+are shown in table \ref{table:kx134-odr}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        ODR Value & Output Data Rate     \\
+        \midrule
+        0x0       & {\SI{0.781}{\hertz}} \\
+        0x1       & {\SI{1.563}{\hertz}} \\
+        0x2       & {\SI{3.125}{\hertz}} \\
+        0x3       & {\SI{6.25}{\hertz}}  \\
+        0x4       & {\SI{12.5}{\hertz}}  \\
+        0x5       & {\SI{25}{\hertz}}    \\
+        0x6       & {\SI{50}{\hertz}}    \\
+        0x7       & {\SI{100}{\hertz}}   \\
+        0x8       & {\SI{200}{\hertz}}   \\
+        0x9       & {\SI{400}{\hertz}}   \\
+        0xa       & {\SI{800}{\hertz}}   \\
+        0xb       & {\SI{1600}{\hertz}}  \\
+        0xc       & {\SI{3200}{\hertz}}  \\
+        0xd       & {\SI{6400}{\hertz}}  \\
+        0xe       & {\SI{12800}{\hertz}} \\
+        0xf       & {\SI{25600}{\hertz}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{KX134-1211 Output Data Rate Values}
+    \label{table:kx134-odr}
+\end{table*}
+
+\paragraph{Range}
+This field encodes the configured full scale range of the accelerometer. The possible values for this field are shown
+in table \ref{table:kx134-fsr}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Range Value & Full Scale Range \\
+        \midrule
+        0x0         & {\SI{\pm 8}{g}}  \\
+        0x1         & {\SI{\pm 16}{g}} \\
+        0x2         & {\SI{\pm 32}{g}} \\
+        0x3         & {\SI{\pm 64}{g}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{KX134-1211 Full Scale Range Values}
+    \label{table:kx134-fsr}
+\end{table*}
+
+\paragraph{Roll}
+This field encode the accelerometer's configured low pass filter roll-off. The possible values for this field are shown
+in table \ref{table:kx134-rolloff}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Roll Value & Low Pass Filter Corner Frequency \\
+        \midrule
+        0x0        & $\text{ODR} / 9$                 \\
+        0x1        & $\text{ODR} / 2$                 \\
+        \bottomrule
+    \end{tabular}
+    \caption{KX134-1211 Low Pass Filter Rolloff Values}
+    \label{table:kx134-rolloff}
+\end{table*}
+
+\paragraph{Res}
+This field encodes the output resolution for the accelerometer. The possible values for this field are shown in table
+\ref{table:kx134-res}.
+
+\begin{table*}[htb]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Res Value & Resolution     \\
+        \midrule
+        0x0       & {\SI{8}{bit}}  \\
+        0x1       & {\SI{16}{bit}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{KX134-1211 Resolution Values}
+    \label{table:kx134-res}
+\end{table*}
+
+\paragraph{Pad}
+This field indicates the number of padding bytes which present after the end of the acceleration data. This field is
+important when parsing 8 bit data because it could appear that there is an extra sample due to padding.
