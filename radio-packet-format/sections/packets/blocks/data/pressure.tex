@@ -1,0 +1,21 @@
+\subsubsection{Pressure}
+
+The pressure data block reports the pressure detected from within the rocket in Pascals. The format of the pressure
+block payload is described in figure \ref{format:telem-pressure}.
+
+\begin{figure}[h]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \wordbox{1}{Pressure} \\
+    \end{bytefield}
+    \caption{Pressure data block format}
+    \label{format:telem-pressure}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Pressure}
+The measured pressure in units of Pascals. This field is an unsigned 32 bit integer.

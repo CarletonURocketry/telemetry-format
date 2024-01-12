@@ -1,16 +1,13 @@
 \subsubsection{Altitude}
 
-The altitude block is used to convey altimeter data. This block contains both the altitude value calculated by the
-rocket and the raw pressure and temperature values if they are available. The format of the altitude block payload is
-described in figure \ref{format:telem-altitude}.
+The altitude block is used to convey the altitude of the rocket. The format of the altitude block payload is described
+in figure \ref{format:telem-altitude}.
 
 \begin{figure}[h]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
         \wordbox{1}{Measurement Time} \\
-        \wordbox{1}{Pressure} \\
-        \wordbox{1}{Temperature} \\
         \wordbox{1}{Altitude}
     \end{bytefield}
     \caption{Altitude Data Payload Format}
@@ -20,14 +17,6 @@ described in figure \ref{format:telem-altitude}.
 \paragraph{Measurement Time}
 The mission time when the measurement was taken.
 
-\paragraph{Pressure}
-The measured pressure in units of Pascals. This field is a signed 32 bit integer in two's complement format.
-
-\paragraph{Temperature}
-The measured temperature in units of 1 millidegree Celsius/LSB. This field is a signed 32 bit integer in two's
-complement format.
-
 \paragraph{Altitude}
 The calculated altitude in units of \SI{1}{\milli\meter\per LSB}. This field is a signed 32 bit integer in two's
 complement format.
-
