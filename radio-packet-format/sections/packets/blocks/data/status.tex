@@ -2,7 +2,7 @@
 
 The status block describes the state of the various software components of the avionics system.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
@@ -23,7 +23,7 @@ The status block describes the state of the various software components of the a
 \paragraph{Measurement Time}
 The mission time at which the states where recorded.
 
-\begin{table*}[htb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -39,7 +39,7 @@ The mission time at which the states where recorded.
     \end{tabular}
     \caption{Sensor States}
     \label{table:sensor-state}
-\end{table*}
+\end{table}
 
 \paragraph{KX134 State}
 The current state of the KX134-1211 accelerometer (if enabled). This field will contain one of the values from table
@@ -53,7 +53,7 @@ The current state of the altimeter (if enabled). This field will contain one of 
 The current state of the inertial measurement unit (if enabled). This field will contain one of the values from table
 \ref{table:sensor-state}.
 
-\begin{table*}[htb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -68,12 +68,12 @@ The current state of the inertial measurement unit (if enabled). This field will
     \end{tabular}
     \caption{SD Card Driver States}
     \label{table:sd-state}
-\end{table*}
+\end{table}
 
 \paragraph{SD State}
 The current state of the SD card driver. This field will contain one of the values from table \ref{table:sd-state}.
 
-\begin{table*}[htb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -91,7 +91,7 @@ The current state of the SD card driver. This field will contain one of the valu
     \end{tabular}
     \caption{Deployment Service States}
     \label{table:deployment-state}
-\end{table*}
+\end{table}
 
 \paragraph{Deployment State}
 The current state of the deployment service state machine. This field will contain one of the values from table

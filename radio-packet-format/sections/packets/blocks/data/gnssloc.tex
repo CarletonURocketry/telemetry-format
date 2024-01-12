@@ -2,7 +2,7 @@
 
 The format of the GNSS location block is described in figure \ref{format:telem-gnss-location}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
@@ -62,7 +62,7 @@ The number of GNSS satellites used in the fix.
 \paragraph{Fix}
 The fix type as shown in table \ref{table:gnss-fix-type}.
 
-\begin{table*}[htb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -76,4 +76,4 @@ The fix type as shown in table \ref{table:gnss-fix-type}.
     \end{tabular}
     \caption{GNSS Fix Type Values}
     \label{table:gnss-fix-type}
-\end{table*}
+\end{table}

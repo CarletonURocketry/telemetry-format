@@ -4,7 +4,7 @@ CU InSpace’s radio packets consist of a packet header followed by one or more 
 its own header followed by a variable amount of data. All headers and data segments have a length that is a multiple of
 four bytes. The layout of a packet is shown in figure \ref{format:packet}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}{16}
         \wordbox{2}{Packet Header} \\
@@ -31,7 +31,7 @@ Every packet is preceded by a 12 byte header. The header contains an amateur rad
 length as well as other information which describes the packet as a whole. The packet header follows the format
 described in figure \ref{format:packet-header}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
@@ -75,7 +75,7 @@ not attempt to parse a packet that has a version number which it does not recogn
 This field indicates the source of the packet. Possible device addresses are listed in table \ref{table:dev-addresses}.
 0xF is not a valid source address.
 
-\begin{table*}
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -89,7 +89,7 @@ This field indicates the source of the packet. Possible device addresses are lis
     \end{tabular}
     \caption{Device addresses}
     \label{table:dev-addresses}
-\end{table*}
+\end{table}
 
 \paragraph{Packet Number}
 This field contains a count value that should be incremented with every packet transmission from a given device. The
@@ -101,7 +101,7 @@ Every block starts with a four byte block header. This header indicates the type
 as well as the blocks’s intended recipient. The block header is formatted as described in figure
 \ref{format:block-header}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
@@ -140,7 +140,7 @@ The \emph{Has Signature} bit is used for cryptographic signing. See section \ref
 The block \emph{Type} field indicates the purpose of the block. Possible values are listed in table
 \ref{table:block-types}. Block types are discussed in more detail in section \ref{sec:block-formats}.
 
-\begin{table*}
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
@@ -154,7 +154,7 @@ The block \emph{Type} field indicates the purpose of the block. Possible values 
     \end{tabular}
     \caption{Block types}
     \label{table:block-types}
-\end{table*}
+\end{table}
 
 \paragraph{Sub-type}
 The \emph{Sub-type} indicates the type of information or request contained in the block. The possible block sub-types
