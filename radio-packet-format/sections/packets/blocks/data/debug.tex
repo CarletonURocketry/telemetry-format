@@ -2,9 +2,22 @@
 
 Debug messages are string messages intended to provide human readable debugging output. They are encoded as UTF-8
 strings and do not require a terminating NULL character because the string length can be extrapolated from the block
-length. Every debug message is preceded by a 32 bit unsigned mission time value.
+length. Every debug message is preceded by a 32 bit unsigned mission time value. See Figure \ref{format:telem-debug}.
 
-Note that like all other data blocks debug messages must be a multiple of four bytes long. If the string to be logged
-is not a multiple of four bytes it must be padded with NULL characters at the end to make it fit the required
+Note that like all other data blocks, debug messages must be a multiple of four bytes long. If the string to be logged
+is not a multiple of four bytes it must be padded with NULL characters at the end to make it fits the required
 alignment. The length recorded in the block header must be a multiple of four, and therefore must include any NULL
 padding bytes at the end of the string.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Mission time} \\
+        \wordbox[lrt]{1}{Debug message} \\
+        \skippedwords \\
+        \wordbox[lrb]{1}{}
+    \end{bytefield}
+    \caption{Layout of debug message data block}
+    \label{format:telem-debug}
+\end{figure}
