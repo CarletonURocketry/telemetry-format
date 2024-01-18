@@ -2,39 +2,33 @@
 
 Data blocks contain telemetry data. The possible sub-types data blocks are listed in table \ref{table:data-subtypes}.
 
-\begin{table*}[htb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
-        Value             & Description                   \\
+        Value             & Description             \\
         \midrule
-        0x00              & Debug message                 \\
-        0x01              & Status                        \\
-        0x02              & Startup message               \\
-        0x03              & Altitude                      \\
-        0x04              & Acceleration                  \\
-        0x05              & Angular velocity              \\
-        0x06              & GNSS location                 \\
-        0x07              & GNSS metadata                 \\
-        0x08              & Power information             \\
-        0x09              & Temperatures                  \\
-        0x0A              & MPU-9250 IMU data             \\
-        0x0B              & KX134-1211 accelerometer data \\
-        0x0C through 0x3F & Reserved for future use       \\
+        0x00              & Debug message           \\
+        0x01              & Altitude                \\
+        0x02              & Temperature             \\
+        0x03              & Pressure                \\
+        0x04              & Acceleration            \\
+        0x05              & Angular velocity        \\
+        0x06              & GNSS location           \\
+        0x07              & GNSS metadata           \\
+        0x08 through 0x3F & Reserved for future use \\
         \bottomrule
     \end{tabular}
     \caption{Data Block Subtypes}
     \label{table:data-subtypes}
-\end{table*}
+\end{table}
 
 % DATA BLOCK TYPES %
 \input{sections/packets/blocks/data/debug.tex}
-\input{sections/packets/blocks/data/status.tex}
-\input{sections/packets/blocks/data/startup.tex}
 \input{sections/packets/blocks/data/altitude.tex}
+\input{sections/packets/blocks/data/temperature.tex}
+\input{sections/packets/blocks/data/pressure.tex}
 \input{sections/packets/blocks/data/acceleration.tex}
 \input{sections/packets/blocks/data/angularvel.tex}
 \input{sections/packets/blocks/data/gnssloc.tex}
 \input{sections/packets/blocks/data/gnssmeta.tex}
-\input{sections/packets/blocks/data/imu.tex}
-\input{sections/packets/blocks/data/accelerometer.tex}

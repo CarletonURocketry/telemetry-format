@@ -8,6 +8,7 @@
 \usepackage[parfill]{parskip} % Allows us to remove paragraph indenting
 \usepackage[all]{hypcap}
 \usepackage{fancyhdr}
+\usepackage{float}
 \usepackage[calcwidth]{titlesec}
 \usepackage{chngcntr}
 \usepackage{bytefield} % For illustrations of bit fields
@@ -29,7 +30,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{CU InSpace - Radio Packet Format}
-\rhead{2021}
+\rhead{\the\year{}}
 \lfoot{\includegraphics[width=40pt]{logo.png}}
 \rfoot{\thepage}
 
@@ -114,8 +115,5 @@
 \clearpage
 
 \input{sections/other_considerations.tex}
-\clearpage
-
-\input{sections/signatures.tex}
 
 \end{document}

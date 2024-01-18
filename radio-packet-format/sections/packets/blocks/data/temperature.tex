@@ -1,0 +1,22 @@
+\subsubsection{Temperature}
+
+The temperature data block reports the temperature detected from within the rocket in millidegrees Celsius. The format
+of the temperature block payload is described in figure \ref{format:telem-temperature}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \wordbox{1}{Temperature} \\
+    \end{bytefield}
+    \caption{Temperature data block format}
+    \label{format:telem-temperature}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Temperature}
+The measured temperature in units of millidegrees Celsius. This field is a signed 32 bit integer in two's complement
+format.
