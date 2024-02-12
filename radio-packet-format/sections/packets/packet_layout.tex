@@ -1,6 +1,6 @@
 \section{Packet Layout}
 
-CU InSpace’s radio packets consist of a packet header followed by one or more segments called blocks. Each block has
+CU InSpace's radio packets consist of a packet header followed by one or more segments called blocks. Each block has
 its own header followed by a variable amount of data. All headers and data segments have a length that is a multiple of
 four bytes. The layout of a packet is shown in figure \ref{format:packet}.
 
@@ -27,7 +27,8 @@ four bytes. The layout of a packet is shown in figure \ref{format:packet}.
 \end{figure}
 
 \subsection{Packet Header}
-Every packet is preceded by a 12 byte header. The header contains an amateur radio call sign and the packets total
+
+Every packet is preceded by a 16 byte header. The header contains an amateur radio call sign and the packets total
 length as well as other information which describes the packet as a whole. The packet header follows the format
 described in figure \ref{format:packet-header}.
 
@@ -35,30 +36,38 @@ described in figure \ref{format:packet-header}.
     \centering
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
-        \wordbox[lrt]{1}{Call Sign} \\
-        \bitbox[lrb]{16}{} & \bitbox{6}{Length} & \bitbox{5}{Version} &
-        \bitbox{5}{\color{lightgray}\rule{\width}{\height}} \\
-        \bitbox{4}{Src. Addr.} & \bitbox{12}{Packet Number} &
-        \bitbox{16}{\color{lightgray}\rule{\width}{\height}} \\
+        \wordbox[lrt]{1}{Call Sign} \\ \bitbox[lr]{32}{} \\
+        \bitbox[lrb]{8}{} & \bitbox{24}{Packet Number} \\
+        \bitbox{16}{Length} & \bitbox{8}{Version} & \bitbox{8}{Src. Addr.} \\
     \end{bytefield}
     \caption{Packet header format}
     \label{format:packet-header}
 \end{figure}
 
 \paragraph{Call Sign}
-The first six bytes of the packet must contain an amateur radio call sign in ASCII. If the call sign being used is less
-than size bytes long, the call sign will be padded with NULL characters at the end.
+The first 9 bytes of the packet must contain an amateur radio call sign in ASCII. If the call sign being used is less
+than 9 bytes long, the call sign will be padded with NULL characters at the end.
+
+The call sign field is 9 bytes long because this field is required to accommodate more than just a single Canadian call
+sign of maximum 6 characters, but also Canadian call signs being used in the United States. Such call signs must be
+suffixed with the call zone in which they are being used. \cite{foreign-broadcast}
+
+For example, the Canadian amateur call sign of \texttt{VA3INI} would become \texttt{VA3INI/W5}, where \texttt{W5} is
+the 5th call zone (coincidentally the call zone for the location where Spaceport America Cup is hosted).
+
+There are 10 call zones in the United States, represented using digits 0-9. \cite{us-callzones} The digit is preceded
+by a forward slash and a capital 'W', for a total of three additional characters on top of the original 6 for a
+Canadian HAM radio call sign.
 
 \paragraph{Length}
-The \emph{Length} field indicates the total length of the packet in bytes. This includes the packet header.
+The \emph{length} field indicates the total length of the packet in bytes. This includes the packet header itself.
 
-The length of a packet must always be a multiple of four bytes. Because of this the \emph{Length} field is encoded in
+The length of a packet must always be a multiple of four bytes. Because of this the \emph{length} field is encoded in
 units of four bytes per least significant bit. Because a packet with a length of zero is not possible, the value in the
-\emph{Length} field is one less than the length of the packet divided by four. This results in a possible range of
-packet lengths of four to 256 bytes in multiples of four (though a valid packet must have a length of at least twelve
-bytes).
+\emph{length} field is one less than the length of the packet divided by four. This results in a possible range of
+packet lengths of 4 to 1024 bytes in multiples of four (though a valid packet must have a length of at least 16 bytes).
 
-The following equations show how the length of a packet in bytes can be converted to the corresponding \emph{Length}
+The following equations show how the length of a packet in bytes can be converted to the corresponding \emph{length}
 value and vice versa.
 
 \begin{align*}
@@ -67,9 +76,9 @@ value and vice versa.
 \end{align*}
 
 \paragraph{Version}
-The \emph{Version} field indicates what version of the radio packet format the packet adheres to. The receiver should
-not attempt to parse a packet that has a version number which it does not recognize. The \emph{Call Sign} and
-\emph{Version} fields will remain for all future versions of this packet format, all other fields could change.
+The \emph{version} field indicates what version of the radio packet format the packet adheres to. The receiver should
+not attempt to parse a packet that has a version number which it does not recognize. The \emph{call sign} and
+\emph{version} fields will remain for all future versions of this packet format, all other fields could change.
 
 \paragraph{Source Address}
 This field indicates the source of the packet. Possible device addresses are listed in table \ref{table:dev-addresses}.
@@ -79,12 +88,12 @@ This field indicates the source of the packet. Possible device addresses are lis
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
-        Address         & Device                  \\
+        Address           & Device                  \\
         \midrule
-        0x0             & Ground Station          \\
-        0x1             & Rocket                  \\
-        0x2 through 0xE & Reserved for future use \\
-        0xF             & Multicast               \\
+        0x00              & Ground Station          \\
+        0x01              & Rocket                  \\
+        0x02 through 0xFE & Reserved for future use \\
+        0xFF              & Multicast               \\
         \bottomrule
     \end{tabular}
     \caption{Device addresses}
@@ -92,13 +101,11 @@ This field indicates the source of the packet. Possible device addresses are lis
 \end{table}
 
 \paragraph{Packet Number}
-This field contains a count value that should be incremented with every packet transmission from a given device. The
-\emph{Packet Number} field together with the \emph{Source Address} field form the packet's \emph{Deduplication Code}.
-See section \ref{subsec:other-considerations_deduplication} for more information on deduplication.
+This field contains a count value that should be incremented with every packet transmission from a given device.
 
 \subsection{Block Header}
 Every block starts with a four byte block header. This header indicates the type of information contained in the block
-as well as the blocks’s intended recipient. The block header is formatted as described in figure
+as well as the blocks’s intended recipient. The block header is formatted as described in Figure
 \ref{format:block-header}.
 
 \begin{figure}[H]

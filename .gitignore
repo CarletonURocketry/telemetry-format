@@ -9,6 +9,10 @@
 *.synctex.gz
 *.toc
 *.out
+*.bbl
+*.bcf
+*.blg
+*.run.xml
 
 # Files with leading . and underscore are compiler generated
 ._*

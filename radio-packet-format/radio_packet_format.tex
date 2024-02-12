@@ -74,6 +74,10 @@
 % No indents on paragraphs
 \setlength{\parindent}{0cm}
 
+% Citations %
+\usepackage[style=ieee]{biblatex}
+\addbibresource{references.bib}
+
 \begin{document}
 
 % TITLE PAGE %
@@ -114,6 +118,7 @@
 \input{sections/packets/blocks/block_formats.tex}
 \clearpage
 
-\input{sections/other_considerations.tex}
+% BIBLIOGRAPHY %
+\printbibliography
 
 \end{document}
