@@ -37,8 +37,8 @@ described in figure \ref{format:packet-header}.
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
         \wordbox[lrt]{1}{Call Sign} \\ \bitbox[lr]{32}{} \\
-        \bitbox[lrb]{8}{} & \bitbox{24}{Packet Number} \\
-        \bitbox{16}{Length} & \bitbox{8}{Version} & \bitbox{8}{Src. Addr.} \\
+        \bitbox[lrb]{8}{} & \bitbox{8}{Length} & \bitbox{8}{Version} & \bitbox{8}{Src. Addr.} \\
+        \bitbox{32}{Packet Number} \\
     \end{bytefield}
     \caption{Packet header format}
     \label{format:packet-header}
@@ -60,15 +60,15 @@ by a forward slash and a capital 'W', for a total of three additional characters
 Canadian HAM radio call sign.
 
 \paragraph{Length}
-The \emph{length} field indicates the total length of the packet in bytes. This includes the packet header itself.
+The length field indicates the total length of the packet in bytes. This includes the packet header itself.
 
-The length of a packet must always be a multiple of four bytes. Because of this the \emph{length} field is encoded in
-units of four bytes per least significant bit. Because a packet with a length of zero is not possible, the value in the
-\emph{length} field is one less than the length of the packet divided by four. This results in a possible range of
-packet lengths of 4 to 1024 bytes in multiples of four (though a valid packet must have a length of at least 16 bytes).
+The length of a packet must always be a multiple of four bytes. Because of this the length field is encoded in units of
+four bytes per least significant bit. Because a packet with a length of zero is not possible, the value in the length
+field is one less than the length of the packet divided by four. This results in a possible range of packet lengths of
+4 to 1024 bytes in multiples of four (though a valid packet must have a length of at least 16 bytes).
 
-The following equations show how the length of a packet in bytes can be converted to the corresponding \emph{length}
-value and vice versa.
+The following equations show how the length of a packet in bytes can be converted to the corresponding length value and
+vice versa.
 
 \begin{align*}
     \text{Length}                 & = \frac{\text{packet length in bytes}}{4} - 1 \\
