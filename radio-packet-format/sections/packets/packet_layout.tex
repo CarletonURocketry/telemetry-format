@@ -1,4 +1,4 @@
-\section{Packet Layout} \label{sec:packet-layout}
+\section{Packet Layout}
 
 CU InSpace’s radio packets consist of a packet header followed by one or more segments called blocks. Each block has
 its own header followed by a variable amount of data. All headers and data segments have a length that is a multiple of
@@ -146,10 +146,8 @@ The block \emph{Type} field indicates the purpose of the block. Possible values 
         \toprule
         Value           & Block Type              \\
         \midrule
-        0x0             & Control                 \\
-        0x1             & Command                 \\
-        0x2             & Data                    \\
-        0x3 through 0xF & Reserved for future use \\
+        0x1             & Data                    \\
+        0x2 through 0xF & Reserved for future use \\
         \bottomrule
     \end{tabular}
     \caption{Block types}
