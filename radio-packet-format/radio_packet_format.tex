@@ -74,6 +74,10 @@
 % No indents on paragraphs
 \setlength{\parindent}{0cm}
 
+% Citations %
+\usepackage[style=ieee]{biblatex}
+\addbibresource{references.bib}
+
 \begin{document}
 
 % TITLE PAGE %
@@ -90,8 +94,8 @@
     {\large \textbf{\today}}
 
     \vspace{\stretch{1}}
-    Samuel Dewan \\
-    Matteo Golin
+    Matteo Golin \\
+    Samuel Dewan
 
     \vspace{\stretch{4}}
     \includegraphics[width=0.5\textwidth]{logo.png}
@@ -114,6 +118,7 @@
 \input{sections/packets/blocks/block_formats.tex}
 \clearpage
 
-\input{sections/other_considerations.tex}
+% BIBLIOGRAPHY %
+\printbibliography
 
 \end{document}
