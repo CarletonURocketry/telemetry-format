@@ -2,6 +2,12 @@
 
 Data blocks contain telemetry data. The possible sub-types data blocks are listed in table \ref{table:data-subtypes}.
 
+Note that all \textbf{mission time} fields are measured in milliseconds since launch, and are all unsigned 32-bit
+integers.
+
+Any integer fields larger than 1 byte are in little-endian format. Any unsigned integers are in two's complement format.
+This is because fields are packaged using C structs on a little endian machine (the de-facto standard).
+
 \begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
