@@ -2,6 +2,12 @@
 
 Data blocks contain telemetry data. The possible sub-types data blocks are listed in table \ref{table:data-subtypes}.
 
+Note that all \textbf{mission time} fields are measured in milliseconds since launch, and are all unsigned 32-bit
+integers.
+
+Any integer fields larger than 1 byte are in little-endian format. Any unsigned integers are in two's complement format.
+This is because fields are packaged using C structs on a little endian machine (the de-facto standard).
+
 \begin{table}[H]
     \centering
     \begin{tabular}{@{}ll@{}}
@@ -16,7 +22,8 @@ Data blocks contain telemetry data. The possible sub-types data blocks are liste
         0x05              & Angular velocity        \\
         0x06              & GNSS location           \\
         0x07              & GNSS metadata           \\
-        0x08 through 0x3F & Reserved for future use \\
+        0x08              & Humidity                \\
+        0x09 through 0xFF & Reserved for future use \\
         \bottomrule
     \end{tabular}
     \caption{Data Block Subtypes}
@@ -32,3 +39,4 @@ Data blocks contain telemetry data. The possible sub-types data blocks are liste
 \input{sections/packets/blocks/data/angularvel.tex}
 \input{sections/packets/blocks/data/gnssloc.tex}
 \input{sections/packets/blocks/data/gnssmeta.tex}
+\input{sections/packets/blocks/data/humidity.tex}
