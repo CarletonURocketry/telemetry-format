@@ -9,10 +9,8 @@ details of any individual accelerometer. The format of the acceleration block pa
     \begin{bytefield}[bitwidth=0.03\linewidth]{32}
         \bitheader{0-31} \\
         \wordbox{1}{Measurement Time} \\
-        \bitbox{8}{Full Scale Range} &
-        \bitbox{8}{\color{lightgray}\rule{\width}{\height}} &
-        \bitbox{16}{X-Axis} \\
-        \bitbox{16}{Y-Axis} & \bitbox{16}{Z-Axis}
+        \bitbox{16}{X-Axis} & \bitbox{16}{Y-Axis} \\ \bitbox{16}{Z-Axis}
+        \bitbox{16}{\color{lightgray}\rule{\width}{\height}} &
     \end{bytefield}
     \caption{Acceleration Data Payload Format}
     \label{format:telem-acceleration}
@@ -21,20 +19,9 @@ details of any individual accelerometer. The format of the acceleration block pa
 \paragraph{Measurement Time}
 The mission time when the measurement was taken.
 
-\paragraph{Full Scale Range}
-The full scale range of the accelerometer in g. This value represents the maximum and minimum acceleration that can be
-measured, for example a value of 16 in this field represents a full scale range of \SI{\pm 16}{g}. If the resolution of
-the accelerometer is less than 16 bits the full scale range must be adjusted to compensate, for example a 10 bit
-accelerometer with a \SI{\pm 2}{g} full scale range would use the value 64 for this field.
-
-This value can be used to calculate the accelerometer sensitivity, which in turn can be used to convert the
-acceleration measurements for each axis into useful units. For a measurement $m$ with a full scale range $f$ the
-acceleration in g can be found like this:
-
-$$
-    \text{acceleration} = m \cdot \frac{f}{2^{15}}
-$$
-
 \paragraph{*-Axis}
 These fields represent the acceleration measurements for each axis. These fields are signed integers in two's
-complement format. If the resolution of the accelerometer is less than 16 bits the values must be sign extended.
+complement format.
+
+The unit of measurement for each axis is measured in centimetres per second squared. That is, dividing the value in each
+axis field by 100 will give the standard acceleration unit of metres per second squared.
