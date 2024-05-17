@@ -18,5 +18,12 @@ in figure \ref{format:telem-altitude}.
 The mission time when the measurement was taken.
 
 \paragraph{Altitude}
-The calculated altitude in units of millimetres above launch height. This field is a signed 32 bit integer in two's
-complement format.
+The calculated altitude in units of millimetres. This field is a signed 32 bit integer in two's complement format.
+
+If the block header specifies the sub-type for altitude above sea level, this measurement should be interpreted as
+millimetres above sea level.
+
+If the block header specifies the sub-type for altitude above launch height, this measurement should be interpreted as
+millimetres from the starting height of the rocket.
+
+See Table \ref{table:data-subtypes} for the sub-types altitude can specify.

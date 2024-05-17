@@ -2,6 +2,13 @@
 
 Data blocks contain telemetry data. The possible sub-types data blocks are listed in table \ref{table:data-subtypes}.
 
+Some sub-types may have identical encoding, but a different interpretation. For example, all altitude measurements are
+encoded in millimetres. However, "sea level altitude" is measured in millimetres above sea level whilst "launch level
+altitude" is measured in millimetres above launch height. When reviewing the encoding for a data type, the description
+will mention how the encoded value should be interpreted. For example, in the case of altitude, the millimetre
+measurement should be interpreted as being relative to sea level if the block header specifies a sub-type of "sea level
+altitude".
+
 Note that all \textbf{mission time} fields are measured in milliseconds since launch, and are all unsigned 32-bit
 integers.
 
@@ -12,18 +19,19 @@ This is because fields are packaged using C structs on a little endian machine (
     \centering
     \begin{tabular}{@{}ll@{}}
         \toprule
-        Value             & Description             \\
+        Value             & Description                                    \\
         \midrule
-        0x00              & Debug message           \\
-        0x01              & Altitude                \\
-        0x02              & Temperature             \\
-        0x03              & Pressure                \\
-        0x04              & Acceleration            \\
-        0x05              & Angular velocity        \\
-        0x06              & GNSS location           \\
-        0x07              & GNSS metadata           \\
-        0x08              & Humidity                \\
-        0x09 through 0xFF & Reserved for future use \\
+        0x00              & Debug message                                  \\
+        0x01              & Altitude above sea level                       \\
+        0x02              & Altitude above launch level                    \\
+        0x03              & Temperature                                    \\
+        0x04              & Pressure                                       \\
+        0x05              & Linear acceleration relative to rocket heading \\
+        0x06              & Linear acceleration relative to ground         \\
+        0x07              & Angular velocity                               \\
+        0x08              & Humidity                                       \\
+        0x09              & Coordinates (latitude and longitude)           \\
+        0x0A through 0xFF & Reserved for future use                        \\
         \bottomrule
     \end{tabular}
     \caption{Data Block Subtypes}
@@ -37,6 +45,5 @@ This is because fields are packaged using C structs on a little endian machine (
 \input{sections/packets/blocks/data/pressure.tex}
 \input{sections/packets/blocks/data/acceleration.tex}
 \input{sections/packets/blocks/data/angularvel.tex}
-\input{sections/packets/blocks/data/gnssloc.tex}
-\input{sections/packets/blocks/data/gnssmeta.tex}
 \input{sections/packets/blocks/data/humidity.tex}
+\input{sections/packets/blocks/data/coordinates.tex}

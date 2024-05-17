@@ -1,0 +1,25 @@
+\subsubsection{Coordinates}
+
+The coordinates block is used to convey the geographical (latitude and longitude) coordinates of the rocket. The format
+of the coordinates block is described in figure \ref{format:telem-coordinate}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \wordbox{1}{Latitude} \\
+        \wordbox{1}{Longitude}
+    \end{bytefield}
+    \caption{Coordinate Data Payload Format}
+    \label{format:telem-coordinate}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{Latitude}
+Measured in degrees per LSB.
+
+\paragraph{Longitude}
+Measured in degrees per LSB.
