@@ -1,0 +1,26 @@
+\subsubsection{Voltage}
+
+The voltage data block reports the voltage measured on a specific electrical trace within the rocket. The measurement
+is associated with a generic numerical ID for identification by the receiver. This allows multiple voltage points to be
+measured within the rocket. The format of the voltage block payload is described in figure \ref{format:telem-voltage}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{16}{ID} & \bitbox{16}{Voltage} \\
+    \end{bytefield}
+    \caption{Voltage data block format}
+    \label{format:telem-voltage}
+\end{figure}
+
+\paragraph{Measurement Time}
+The mission time when the measurement was taken.
+
+\paragraph{ID}
+A numerical ID associated with the voltage measurement for identification by the receiver. This field is an unsigned 16
+bit integer.
+
+\paragraph{Voltage}
+The measured temperature in units of millivolts. This field is a signed 16 bit integer.

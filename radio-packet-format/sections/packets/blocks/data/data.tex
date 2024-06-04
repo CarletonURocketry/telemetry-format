@@ -31,7 +31,8 @@ This is because fields are packaged using C structs on a little endian machine (
         0x07              & Angular velocity                               \\
         0x08              & Humidity                                       \\
         0x09              & Coordinates (latitude and longitude)           \\
-        0x0A through 0xFF & Reserved for future use                        \\
+        0x0A              & Voltage                                        \\
+        0x0B through 0xFF & Reserved for future use                        \\
         \bottomrule
     \end{tabular}
     \caption{Data Block Subtypes}
@@ -47,3 +48,4 @@ This is because fields are packaged using C structs on a little endian machine (
 \input{sections/packets/blocks/data/angularvel.tex}
 \input{sections/packets/blocks/data/humidity.tex}
 \input{sections/packets/blocks/data/coordinates.tex}
+\input{sections/packets/blocks/data/voltage.tex}
