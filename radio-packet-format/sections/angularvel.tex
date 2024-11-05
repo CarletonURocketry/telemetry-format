@@ -6,20 +6,21 @@ details of any individual gyroscope. The format of the acceleration block payloa
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
-        \wordbox{1}{Measurement Time} \\
-        \bitbox{16}{X-Axis} & \bitbox{16}{Y-Axis} \\
-        \bitbox{16}{Z-Axis} & \bitbox{16}{\color{lightgray}\rule{\width}{\height}}
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
+        \bitbox{16}{Measurement Time} \\
+        \bitbox{16}{X-Axis} \\
+        \bitbox{16}{Y-Axis} \\
+        \bitbox{16}{Z-Axis} \\
     \end{bytefield}
     \caption{Angular Velocity Data Payload Format}
     \label{format:telem-angular-velocity}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{*-Axis}
+
 These fields represent the angular velocity measurements for each axis. These fields are signed integers in two's
 complement format.
 

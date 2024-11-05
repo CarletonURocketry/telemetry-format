@@ -1,0 +1,130 @@
+\section{Packet Layout}
+
+CU InSpace's radio packets consist of a packet header followed by one or more segments called blocks. Each block has
+its own header followed by a variable amount of data determined by the block type. The layout of a packet is shown in
+figure \ref{format:packet}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}{16}
+        \wordbox{2}{Packet Header} \\
+        \begin{rightwordgroup}{Block 1}
+            \wordbox{2}{Block Header} \\
+            \wordbox[lrt]{1}{Block Contents} \\
+            \skippedwords \\
+            \wordbox[lrb]{1}{}
+        \end{rightwordgroup} \\
+        \wordbox[]{1}{$\vdots$} \\[1ex]
+        \begin{rightwordgroup}{Block $N$}
+            \wordbox{2}{Block Header} \\
+            \wordbox[lrt]{1}{Block Contents} \\
+            \skippedwords \\
+            \wordbox[lrb]{1}{}
+        \end{rightwordgroup} \\
+    \end{bytefield}
+    \caption{Layout of radio packet}
+    \label{format:packet}
+\end{figure}
+
+\subsection{Packet Header} \label{sec:pkt-hdr}
+
+Every packet is preceded by a 13 byte header. The header contains an amateur radio call sign and other information which
+describes the packet as a whole. The packet header follows the format described in figure \ref{format:packet-header}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
+        \bitheader{0-31} \\
+        \wordbox[lrt]{1}{Call Sign} \\ \bitbox[lr]{32}{} \\
+        \bitbox[lrb]{8}{} & \bitbox{16}{Timestamp} & \bitbox{8}{Num Blocks} \\
+        & \bitbox{8}{Packet Number} \\
+    \end{bytefield}
+    \caption{Packet header format}
+    \label{format:packet-header}
+\end{figure}
+
+\paragraph{Call Sign}
+
+The first 9 bytes of the packet must contain an amateur radio call sign in ASCII. If the call sign being used is less
+than 9 bytes long, the call sign will be padded with NULL characters at the end.
+
+The call sign field is 9 bytes long because this field is required to accommodate more than just a single Canadian call
+sign of maximum 6 characters, but also Canadian call signs being used in the United States. Such call signs must be
+suffixed with the call zone in which they are being used. \cite{foreign-broadcast}
+
+For example, the Canadian amateur call sign of \texttt{VA3INI} would become \texttt{VA3INI/W5}, where \texttt{W5} is
+the 5th call zone (coincidentally the call zone for the location where Spaceport America Cup is hosted).
+
+There are 10 call zones in the United States, represented using digits 0-9. \cite{us-callzones} The digit is preceded
+by a forward slash and a capital 'W', for a total of three additional characters on top of the original 6 for a
+Canadian HAM radio call sign.
+
+\paragraph{Timestamp}
+
+This field is an unsigned 16 bit integer representing a number of minutes since power on. This timestamp serves as a
+base timestamp to which measurement timestamp offsets are added to.
+
+For instance, the packet header may contain a value of 1 in this field, indicating the base timestamp is 1 minute since
+power on. A subsequent block may be a temperature block with a measurement timestamp field containing the value of 12
+milliseconds. This value is to be added to the packet header field, meaning that the temperature measurement was taken
+at 1 minute and 12 milliseconds after power on.
+
+This schema allows millisecond resolution on measurement time, while preserving a maximum mission duration of around
+1092 hours, as seen in equation \ref{eq:max-mission-time}
+
+\begin{equation} \label{eq:max-mission-time}
+    \frac{2^{16} - 1}{60} = 1092.25 \\
+\end{equation}
+
+\paragraph{Num Blocks}
+
+This field is an unsigned 8 bit integer that contains the total number of blocks in the packet.
+
+\paragraph{Packet Number}
+
+This field is an unsigned 8 bit integer. It is a rolling counter of the packet sequence number, starting at 0 and
+increasing until 255 before rolling over again. Reading this field off of received packets should give an indication of
+whether any packets were lost in transmission.
+
+\subsection{Block Header}
+
+Every block starts with a block header. This header indicates the type of information contained in the subsequent
+block, which allows for parsing of the received data. The block header is formatted as described in Figure
+\ref{format:block-header}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{8}
+        \bitheader{0-7} \\
+        \bitbox{8}{Type} &
+    \end{bytefield}
+    \caption{Block header format}
+    \label{format:block-header}
+\end{figure}
+
+\paragraph{Type}
+
+The block type field indicates the information contained in the block. Possible values are listed in table
+\ref{table:block-types}. Block types are discussed in more detail in section \ref{sec:block-formats}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Block type                           & Value             \\
+        \midrule
+        Altitude above sea level             & 0x00              \\
+        Altitude above launch level          & 0x01              \\
+        Temperature                          & 0x02              \\
+        Pressure                             & 0x03              \\
+        Linear acceleration                  & 0x04              \\
+        Angular velocity                     & 0x06              \\
+        Humidity                             & 0x07              \\
+        Coordinates (latitude and longitude) & 0x08              \\
+        Voltage                              & 0x09              \\
+        Reserved for future use              & 0x0A through 0xFF \\
+        \bottomrule
+    \end{tabular}
+    \caption{Block types}
+    \label{table:block-types}
+\end{table}

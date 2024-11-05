@@ -1,15 +1,11 @@
 \section{Introduction} \label{sec:introduction}
 
-In order to efficiently communicate telemetry data between various devices, Carleton University In Space has devised
-its own unique packet format for transmission over LoRa radio. The packet format is not only used for radio
-communications, but also for logging telemetry data in-flight.
+In order to efficiently communicate telemetry data between various devices, Carleton University InSpace has devised its
+own unique packet format for transmission over LoRa radio. The packet format is not only used for radio communications,
+but also for logging telemetry data in-flight.
 
 This packet format is made publicly available via the MIT license.
 
-The packet format which follows is used for three primary purposes:
-
-\begin{itemize}
-    \item Transmitting telemetry data.
-    \item Controlling telemetry systems.
-    \item Transmitting devices statuses.
-\end{itemize}
+The packet format which follows is made to efficiently transmit flight data recorded by sensors alongside their
+measurement times. LoRa is a low bandwidth protocol, so it is critical to minimize any unnecessary control information
+where possible.

@@ -5,18 +5,18 @@ of the temperature block payload is described in figure \ref{format:telem-temper
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \wordbox{1}{Temperature} \\
+        \wordbox{2}{Temperature} \\
     \end{bytefield}
     \caption{Temperature data block format}
     \label{format:telem-temperature}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{Temperature}
+
 The measured temperature in units of millidegrees Celsius. This field is a signed 32 bit integer in two's complement
 format.

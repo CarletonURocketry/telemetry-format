@@ -6,20 +6,21 @@ over the details of any individual accelerometer. The format of the acceleration
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \bitbox{16}{X-Axis} & \bitbox{16}{Y-Axis} \\ \bitbox{16}{Z-Axis}
-        \bitbox{16}{\color{lightgray}\rule{\width}{\height}} &
+        \wordbox{1}{X-Axis} \\
+        \wordbox{1}{Y-Axis} \\
+        \wordbox{1}{Z-Axis} \\
     \end{bytefield}
     \caption{Acceleration Data Payload Format}
     \label{format:telem-acceleration}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{*-Axis}
+
 These fields represent the acceleration measurements for each axis. These fields are signed integers in two's
 complement format.
 

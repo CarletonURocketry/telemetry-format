@@ -5,21 +5,22 @@ of the coordinates block is described in figure \ref{format:telem-coordinate}.
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \wordbox{1}{Latitude} \\
-        \wordbox{1}{Longitude}
+        \wordbox{2}{Latitude} \\
+        \wordbox{2}{Longitude} \\
     \end{bytefield}
     \caption{Coordinate Data Payload Format}
     \label{format:telem-coordinate}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{Latitude}
+
 Measured in micro-degrees. This field is a signed 32 bit integer. To convert to degrees, divide by $10^7$.
 
 \paragraph{Longitude}
+
 Measured in micro-degrees. This field is a signed 32 bit integer. To convert to degrees, divide by $10^7$.

@@ -5,17 +5,17 @@ block payload is described in figure \ref{format:telem-pressure}.
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \wordbox{1}{Pressure} \\
+        \wordbox{2}{Pressure} \\
     \end{bytefield}
     \caption{Pressure data block format}
     \label{format:telem-pressure}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{Pressure}
+
 The measured pressure in units of Pascals. This field is an unsigned 32 bit integer.
