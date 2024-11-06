@@ -5,18 +5,18 @@ described in figure \ref{format:telem-humidity}.
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \wordbox{1}{Humidity}
+        \wordbox{2}{Humidity}
     \end{bytefield}
     \caption{Humidity Data Payload Format}
     \label{format:telem-humidity}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
+\blocktimestampexp
 
 \paragraph{Humidity}
+
 The calculated relative humidity in ten thousandths of a percent (i.e 1\% is 100). This field is an unsigned 32 bit
 integer.

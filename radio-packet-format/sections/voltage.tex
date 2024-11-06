@@ -6,21 +6,23 @@ measured within the rocket. The format of the voltage block payload is described
 
 \begin{figure}[H]
     \centering
-    \begin{bytefield}[bitwidth=0.03\linewidth]{32}
-        \bitheader{0-31} \\
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
         \wordbox{1}{Measurement Time} \\
-        \bitbox{16}{ID} & \bitbox{16}{Voltage} \\
+        \wordbox{1}{Voltage} \\
+        \bitbox{8}{ID} \\
     \end{bytefield}
     \caption{Voltage data block format}
     \label{format:telem-voltage}
 \end{figure}
 
-\paragraph{Measurement Time}
-The mission time when the measurement was taken.
-
-\paragraph{ID}
-A numerical ID associated with the voltage measurement for identification by the receiver. This field is an unsigned 16
-bit integer.
+\blocktimestampexp
 
 \paragraph{Voltage}
+
 The measured voltage in units of millivolts. This field is a signed 16 bit integer.
+
+\paragraph{ID}
+
+A numerical identifier associated with the voltage measurement for identification by the receiver. This field is an
+unsigned 8 bit integer, allowing for up to 255 unique identifiers.

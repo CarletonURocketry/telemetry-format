@@ -1,0 +1,20 @@
+% Some information about block timestamps that will be needed for virtually all blocks
+\def\blocktimestampexp{
+    \paragraph{Measurement Time}
+    An unsigned 16 bit integer in units of milliseconds. This timestamp is meant to be added as an offset to the base
+    timestamp in the packet header. This is explained in section \ref{sec:pkt-hdr}.
+}
+
+\section{Block Formats} \label{sec:block-formats}
+
+Blocks have a type which indicates their contents. The possible block types are listed in table
+\ref{table:block-types}. This section describes the possible block types and their associated data formats.
+
+\input{sections/altitude.tex}
+\input{sections/acceleration.tex}
+\input{sections/angularvel.tex}
+\input{sections/coordinates.tex}
+\input{sections/humidity.tex}
+\input{sections/pressure.tex}
+\input{sections/temperature.tex}
+\input{sections/voltage.tex}

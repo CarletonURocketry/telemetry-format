@@ -1,0 +1,89 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{foreign-broadcast}{online}{}
+      \name{author}{1}{}{%
+        {{hash=d4e487b195403aedfe3e4d6bde6e1a7a}{%
+           family={Bertuzzo},
+           familyi={B\bibinitperiod},
+           given={Serge},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Radio Amateurs of Canada}%
+      }
+      \strng{namehash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \strng{fullhash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \strng{bibnamehash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \strng{authorbibnamehash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \strng{authornamehash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \strng{authorfullhash}{d4e487b195403aedfe3e4d6bde6e1a7a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Operating Amateur Radio in Foreign Countries}
+      \field{urlday}{11}
+      \field{urlmonth}{2}
+      \field{urlyear}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.rac.ca/operating/operation-in-foreign-countries/
+      \endverb
+      \verb{url}
+      \verb https://www.rac.ca/operating/operation-in-foreign-countries/
+      \endverb
+    \endentry
+    \entry{us-callzones}{online}{}
+      \name{author}{1}{}{%
+        {{hash=0a9b8975801baf1692a305c56ef3de66}{%
+           family={Stroobandt},
+           familyi={S\bibinitperiod},
+           given={Serge},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{0a9b8975801baf1692a305c56ef3de66}
+      \strng{fullhash}{0a9b8975801baf1692a305c56ef3de66}
+      \strng{bibnamehash}{0a9b8975801baf1692a305c56ef3de66}
+      \strng{authorbibnamehash}{0a9b8975801baf1692a305c56ef3de66}
+      \strng{authornamehash}{0a9b8975801baf1692a305c56ef3de66}
+      \strng{authorfullhash}{0a9b8975801baf1692a305c56ef3de66}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{US Call Areas \& Zones by State}
+      \field{urlday}{11}
+      \field{urlmonth}{2}
+      \field{urlyear}{2024}
+      \field{year}{2019}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://hamwaves.com/map.us/en/index.html
+      \endverb
+      \verb{url}
+      \verb https://hamwaves.com/map.us/en/index.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

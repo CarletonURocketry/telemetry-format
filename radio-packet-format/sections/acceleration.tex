@@ -1,0 +1,31 @@
+\subsubsection{Linear Acceleration}
+
+The linear acceleration block is used to convey generic 3-axis accelerometer data. This block is intended to abstract
+over the details of any individual accelerometer. The format of the acceleration block payload is described in figure
+\ref{format:telem-acceleration}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
+        \wordbox{1}{Measurement Time} \\
+        \wordbox{1}{X-Axis} \\
+        \wordbox{1}{Y-Axis} \\
+        \wordbox{1}{Z-Axis} \\
+    \end{bytefield}
+    \caption{Acceleration Data Payload Format}
+    \label{format:telem-acceleration}
+\end{figure}
+
+\blocktimestampexp
+
+\paragraph{*-Axis}
+
+These fields represent the acceleration measurements for each axis. These fields are signed integers in two's
+complement format.
+
+The unit of measurement for each axis is measured in centimetres per second squared. That is, dividing the value in
+each axis field by 100 will give the standard acceleration unit of metres per second squared.
+
+The acceleration measurements are relative to the rocket's heading. If the IMU Z-axis is in parallel with the rocket,
+then the acceleration in the z-axis is also a parallel vector.
