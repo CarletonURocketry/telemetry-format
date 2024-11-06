@@ -27,13 +27,5 @@ complement format.
 The unit of measurement for each axis is measured in centimetres per second squared. That is, dividing the value in
 each axis field by 100 will give the standard acceleration unit of metres per second squared.
 
-If the sub-type specified in the block header is linear acceleration relative to the rocket heading, the data in these
-fields should be interpreted as having heading's relative to the rocket's current position in 3D space. This means that
-measurements in the Z-axis may not necessarily provide vertical acceleration; the measurement could be horizontal if
-the rocket is flying directly horizontally.
-
-If the sub-type specified in the block header is linear acceleration relative to the ground, the data in these fields
-can be interpreted as never changing in direction. Z-axis acceleration can be interpreted as vertical acceleration in
-this case.
-
-All possible sub-types of linear acceleration are listed in Table \ref{table:data-subtypes}.
+The acceleration measurements are relative to the rocket's heading. If the IMU Z-axis is in parallel with the rocket,
+then the acceleration in the z-axis is also a parallel vector.
