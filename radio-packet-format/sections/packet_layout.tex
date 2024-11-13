@@ -61,19 +61,19 @@ Canadian HAM radio call sign.
 
 \paragraph{Timestamp}
 
-This field is an unsigned 16 bit integer representing a number of minutes since power on. This timestamp serves as a
-base timestamp to which measurement timestamp offsets are added to.
+This field is an unsigned 16 bit integer representing a number of half-minutes since power on. This timestamp serves as
+a base timestamp to which measurement timestamp offsets are added to.
 
-For instance, the packet header may contain a value of 1 in this field, indicating the base timestamp is 1 minute since
-power on. A subsequent block may be a temperature block with a measurement timestamp field containing the value of 12
+For instance, the packet header may contain a value of 1 in this field, indicating the base timestamp is 30 seconds since
+power on. A subsequent block may be a temperature block with a measurement timestamp field containing the value of +12
 milliseconds. This value is to be added to the packet header field, meaning that the temperature measurement was taken
-at 1 minute and 12 milliseconds after power on.
+at 30 seconds and 12 milliseconds after power on.
 
 This schema allows millisecond resolution on measurement time, while preserving a maximum mission duration of around
-1092 hours, as seen in equation \ref{eq:max-mission-time}
+546 hours, as seen in equation \ref{eq:max-mission-time}
 
 \begin{equation} \label{eq:max-mission-time}
-    \frac{2^{16} - 1}{60} = 1092.25 \\
+    \frac{2^{16} - 1}{2*60} = 546.125 \\
 \end{equation}
 
 \paragraph{Num Blocks}
