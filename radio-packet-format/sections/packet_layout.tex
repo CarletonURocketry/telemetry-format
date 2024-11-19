@@ -4,6 +4,8 @@ CU InSpace's radio packets consist of a packet header followed by one or more se
 its own header followed by a variable amount of data determined by the block type. The layout of a packet is shown in
 figure \ref{format:packet}.
 
+\textbf{All fields in this specification are little endian.}
+
 \begin{figure}[H]
     \centering
     \begin{bytefield}{16}
