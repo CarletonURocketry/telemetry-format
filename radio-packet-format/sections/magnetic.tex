@@ -1,0 +1,30 @@
+\subsection{3-Axis Magnetic Field}
+
+The magnetic field block is used to convey generic 3-axis magnetometer data. This block is intended to abstract
+over the details of any individual magnetometer. The format of the 3-axis magnetic field block payload is described in figure
+\ref{format:telem-magnetic}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
+        \wordbox{1}{Measurement Time} \\
+        \wordbox{1}{X-Axis} \\
+        \wordbox{1}{Y-Axis} \\
+        \wordbox{1}{Z-Axis} \\
+    \end{bytefield}
+    \caption{3-Axis Magnetic Field Data Payload Format}
+    \label{format:telem-magnetic}
+\end{figure}
+
+\blocktimestampexp
+
+\paragraph{*-Axis}
+
+These fields represent the magnetic field measurements for each axis. These fields are signed integers in two's
+complement format.
+
+The unit of measurement for each axis is 0.1 microtesla.
+
+The magnetic field measurements are relative to the rocket's heading. If the magnetometer Z-axis is parallel with the rocket,
+then the magnetic field in the z-axis is also a parallel vector.
