@@ -1,0 +1,46 @@
+\subsection{Status Message}
+
+The status message block type reports information about the current state of the telemetry system in integer codes,
+such as the current flight state or flight events that are detected. The format of the status message payload
+is described in figure \ref{format:status-message}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{8}{Status Code} \\
+    \end{bytefield}
+    \caption{Status message data block format}
+    \label{format:status-message}
+\end{figure}
+
+\blocktimestampexp
+
+\paragraph{Status Code}
+
+A status code is an integer representing information about the rocket's state, the state of the telemetry system, or other information.
+The measurement time describes a time that the status code was valid, such as when a state change or event occurs, or any time afterwards.
+The same code can be transmitted multiple times to ensure that a receiver gets has an up to date picture of the telemetry system's
+operation. For example, the state of the telemetry system could be transmitted periodically. The possible status codes are described in
+\ref{table:status-message-codes}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        Status message              & Value             \\
+        \midrule
+        Systems nominal             & 0x00              \\
+        Telemetry in idle state     & 0x01              \\
+        Telemetry in airborne state & 0x02              \\
+        Telemetry in landed state   & 0x03              \\
+        Rocket ascent detected      & 0x04              \\
+        Rocket apogee detected      & 0x05              \\
+        Rocket descent detected     & 0x06              \\
+        Reserved for future use     & 0x07 through 0xFF \\
+        \bottomrule
+    \end{tabular}
+    \caption{Status message codes}
+    \label{table:status-message-codes}
+\end{table}
