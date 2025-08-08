@@ -1,0 +1,30 @@
+\subsection{Error Message}
+
+The error message block type reports information about failures in the telemetry system. The format of the error
+message payload is described in figure \ref{format:error-message}.
+
+\begin{figure}[H]
+    \centering
+    \begin{bytefield}[bitwidth=0.03\linewidth]{16}
+        \bitheader{0-15} \\
+        \wordbox{1}{Measurement Time} \\
+        \bitbox{3}{}
+        \bitbox{5}{PID}
+        \bitbox{8}{Error Code} \\
+    \end{bytefield}
+    \caption{Error message data block format}
+    \label{format:error-message}
+\end{figure}
+
+\blocktimestampexp
+
+\paragraph{PID}
+
+The PID (process ID) or originating process is a number that corresponds to the context that the error occurred in,
+denoting which process, thread, or hardware component the error occurred in. A value of 0x00 represents a general error,
+not specific to any context. Other values are left to the telemetry system to define.
+
+\paragraph{Error Codes}
+
+The error codes describe the specific type of error that has occurred. The value of 0x00 is defined as a general error,
+with an unknown source. Other values are left to the telemetry system to define.
